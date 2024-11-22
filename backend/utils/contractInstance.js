@@ -1,6 +1,6 @@
 const { ethers } = require("hardhat");
 require("dotenv").config();
-const contractABI =
+const nftMarketplaceContractABI =
   require("../artifacts/contracts/NFTMarketplace.sol/NFTMarketplace.json").abi;
 
 const {
@@ -17,8 +17,8 @@ const nftMarketplaceAddress = NFT_MARKETPLACE_CONTRACT_ADDRESS;
 
 const nftMarketplace = new ethers.Contract(
   nftMarketplaceAddress,
-  contractABI,
+  nftMarketplaceContractABI,
   wallet
 );
 
-module.exports = nftMarketplace;
+module.exports = { nftMarketplace, wallet};
