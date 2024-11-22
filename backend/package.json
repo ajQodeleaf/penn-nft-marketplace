@@ -14,7 +14,9 @@
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "node-cache": "^5.1.2",
-    "pg": "^8.13.1"
+    "pg": "^8.13.1",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.5"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
