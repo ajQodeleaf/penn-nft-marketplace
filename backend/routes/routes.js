@@ -56,9 +56,6 @@ router.get("/transactions", getAllTransactions);
 router.get("/transaction/:nftId", getTransactionHistoryByNFTId);
 router.post("/transaction", createTransaction);
 
-router.get("/listings", getAllListings);
-router.get("/listing/:listingId", getListing);
-
 router.get("/earnings", getEarnings);
 router.post("/earnings/withdraw", withdrawEarnings);
 
