@@ -5,7 +5,9 @@ async function main() {
   const contractAddress = process.env.NFT_MARKETPLACE_CONTRACT_ADDRESS;
 
   if (!contractAddress) {
-    console.error("❌ Contract address is not set in the environment variable NFT_MARKETPLACE_CONTRACT_ADDRESS.");
+    console.error(
+      "❌ Contract address is not set in the environment variable NFT_MARKETPLACE_CONTRACT_ADDRESS."
+    );
     process.exit(1);
   }
 

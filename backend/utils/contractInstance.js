@@ -21,4 +21,4 @@ const nftMarketplace = new ethers.Contract(
   wallet
 );
 
-module.exports = { nftMarketplace, wallet};
+module.exports = { nftMarketplace, wallet };

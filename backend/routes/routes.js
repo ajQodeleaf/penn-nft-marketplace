@@ -1,39 +1,47 @@
 const express = require("express");
 const router = express.Router();
 const {
+  getAllUsers,
   getUser,
+  getUserByWallet,
   createUser,
-  createCollection,
-  createNFT,
+  updateUser,
+  getAllCollections,
   getCollectionByContract,
-  verifyNFT,
-  createTransaction,
+  createCollection,
+  updateCollection,
+  deleteCollection,
+  verifyCollection,
+  getAllNFTs,
   getNFTById,
+  createNFT,
   updateNFT,
   deleteNFT,
+  listNFT,
+  buyNFT,
+  verifyNFT,
+  getAllTransactions,
   getTransactionHistoryByNFTId,
+  createTransaction,
   getAllListings,
   getListing,
   getEarnings,
-  getAllCollections,
-  getAllNFTs,
-  getUserByWallet,
-  updateUser,
-  getAllTransactions,
-  getAllUsers,
-  listNFT,
-  buyNFT,
+  withdrawEarnings,
+  getRankings,
 } = require("../controllers/controllers");
 
 router.get("/users", getAllUsers);
 router.get("/user/:id", getUser);
-router.get("/user/:walletAddress", getUserByWallet);
+router.get("/user/wallet/:walletAddress", getUserByWallet);
 router.post("/user", createUser);
 router.put("/user/:id", updateUser);
 
 router.get("/collections", getAllCollections);
 router.get("/collection/:contractAddress", getCollectionByContract);
 router.post("/collection", createCollection);
+router.put("/collection/:contractAddress", updateCollection);
+router.delete("/collection/:contractAddress", deleteCollection);
+router.post("/collection/verify/:contractAddress", verifyCollection);
 
 router.get("/nfts", getAllNFTs);
 router.get("/nft/:id", getNFTById);
@@ -52,5 +60,8 @@ router.get("/listings", getAllListings);
 router.get("/listing/:listingId", getListing);
 
 router.get("/earnings", getEarnings);
+router.post("/earnings/withdraw", withdrawEarnings);
+
+router.get("/rankings", getRankings);
 
 module.exports = router;
