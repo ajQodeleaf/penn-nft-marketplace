@@ -23,8 +23,6 @@ const {
   getAllTransactions,
   getTransactionHistoryByNFTId,
   createTransaction,
-  getAllListings,
-  getListing,
   getEarnings,
   withdrawEarnings,
   getRankings,
