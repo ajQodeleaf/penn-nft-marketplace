@@ -1,9 +1,20 @@
 const { Sequelize, DataTypes } = require("sequelize");
 require("dotenv").config();
 
-const isProduction = process.env.NODE_ENV === "production";
+const {
+  DB_USERNAME,
+  DB_PASSWORD,
+  DB_HOSTNAME,
+  DB_PORT,
+  DB_NFT_MARKETPLACE,
+  NODE_ENV,
+} = process.env;
 
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
+const isProduction = NODE_ENV === "production";
+
+const DATABASE_URL = `postgres://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOSTNAME}:${DB_PORT}/${DB_NFT_MARKETPLACE}`;
+
+const sequelize = new Sequelize(DATABASE_URL, {
   dialect: "postgres",
   logging: false,
   dialectOptions: isProduction
@@ -16,14 +27,17 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
     : {},
 });
 
-const User = require("./user")(sequelize, DataTypes);
-const NFT = require("./nft")(sequelize, DataTypes);
-const Transaction = require("./transaction")(sequelize, DataTypes);
-const Collection = require("./collection")(sequelize, DataTypes);
+const models = {
+  User: require("./user")(sequelize, DataTypes),
+  NFT: require("./nft")(sequelize, DataTypes),
+  Transaction: require("./transaction")(sequelize, DataTypes),
+  Collection: require("./collection")(sequelize, DataTypes),
+};
 
-User.associate({ NFT, Transaction, Collection });
-NFT.associate({ User, Transaction });
-Transaction.associate({ User, NFT });
-Collection.associate({ User });
+Object.keys(models).forEach((modelName) => {
+  if (models[modelName].associate) {
+    models[modelName].associate(models); 
+  }
+});
 
-module.exports = { sequelize, User, NFT, Transaction, Collection };
+module.exports = { sequelize, ...models };
