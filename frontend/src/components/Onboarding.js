@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Box, Button, Text, Image, HStack } from "@chakra-ui/react";
-import { onboardingContent } from "@/services/data";
+import { onboardingContent } from "../services/data";
 
 export default function Onboarding({ onComplete }) {
   const [currentIndex, setCurrentIndex] = useState(0);

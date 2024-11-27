@@ -1,11 +1,11 @@
 "use client";
 import { Box, Flex, Text, Image, Button } from "@chakra-ui/react";
-import SearchBox from "@/components/SearchBox";
-import SectionHeader from "@/components/SectionHeader";
-import NewsList from "@/components/NewsList";
-import HorizontalList from "@/components/HorizontalList";
-import CategoriesList from "@/components/CategoriesList";
-import { getCategories, getNewsData, getNFTItems } from "@/services/data";
+import SearchBox from "../components/SearchBox";
+import SectionHeader from "../components/SectionHeader";
+import NewsList from "../components/NewsList";
+import HorizontalList from "../components/HorizontalList";
+import CategoriesList from "../components/CategoriesList";
+import { getCategories, getNewsData, getNFTItems } from "../services/data";
 
 export default function Home() {
   const items = getCategories();

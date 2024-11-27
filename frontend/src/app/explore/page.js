@@ -1,9 +1,9 @@
 "use client";
 import { Box,  IconButton, Button } from "@chakra-ui/react";
-import HorizontalList from "@/components/HorizontalList";
-import RankingList from "@/components/RankingList";
-import SearchBox from "@/components/SearchBox";
-import SectionHeader from "@/components/SectionHeader";
+import HorizontalList from "../../components/HorizontalList";
+import RankingList from "../../components/RankingList";
+import SearchBox from "../../components/SearchBox";
+import SectionHeader from "../../components/SectionHeader";
 import { getNewsData, getNFTItems, getRankingsData } from "../../services/data";
 
 const ExplorePage = () => {

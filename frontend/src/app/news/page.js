@@ -1,14 +1,14 @@
 "use client";
-import Carousel from "@/components/Carousel";
-import CategoriesList from "@/components/CategoriesList";
-import NewsList from "@/components/NewsList";
-import SearchBox from "@/components/SearchBox";
-import SectionHeader from "@/components/SectionHeader";
+import Carousel from "../../components/Carousel";
+import CategoriesList from "../../components/CategoriesList";
+import NewsList from "../../components/NewsList";
+import SearchBox from "../../components/SearchBox";
+import SectionHeader from "../../components/SectionHeader";
 import {
   getNewsCategories,
   getCarouselData,
   getNewsData,
-} from "@/services/data";
+} from "../../services/data";
 import { Box, Button, IconButton, Text, Image } from "@chakra-ui/react";
 import React from "react";
 
