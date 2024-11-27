@@ -44,12 +44,6 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
-  Transaction.beforeCreate((transaction) => {
-    if (transaction.buyerId === transaction.sellerId) {
-      throw new Error("Buyer and seller cannot be the same user.");
-    }
-  });
-
   Transaction.associate = (models) => {
     Transaction.belongsTo(models.User, {
       foreignKey: "buyerId",
