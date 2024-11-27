@@ -3,14 +3,28 @@ import { Button, Box } from "@chakra-ui/react";
 import { useWallet } from "../context/WalletContext";
 
 const ConnectWallet = () => {
-  const { isConnected, account, connectMetaMask } = useWallet();
+  const { isConnected, connectMetaMask } = useWallet();
 
   return (
-    <Box textAlign="center" p={5}>
-      {isConnected ? (
-        <Box>Connected as: {account}</Box>
-      ) : (
-        <Button onClick={connectMetaMask} colorScheme="teal" size="lg">
+    <Box
+      height="100vh"
+      display="flex"
+      alignItems="end"
+      justifyContent="center"
+      backgroundImage="url('/welcome.jpg')"
+      backgroundSize="cover"
+      backgroundPosition="center"
+      backgroundRepeat="no-repeat"
+      pb="40px"
+    >
+      {!isConnected && (
+        <Button
+          onClick={connectMetaMask}
+          color="#1E365D"
+          size="lg"
+          zIndex={1}
+          width="80%"
+        >
           Connect to MetaMask
         </Button>
       )}
