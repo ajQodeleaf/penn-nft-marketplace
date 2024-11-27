@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
       },
       value: {
-        type: DataTypes.DECIMAL(18, 8),
+        type: DataTypes.DECIMAL(38, 18),
         allowNull: false,
         validate: {
           min: 0.0,

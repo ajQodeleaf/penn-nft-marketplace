@@ -71,10 +71,6 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
-  NFT.beforeCreate((nft) => {
-    nft.metadataURI = nft.metadataURI.toLowerCase();
-  });
-
   NFT.associate = (models) => {
     NFT.belongsTo(models.User, {
       foreignKey: "sellerId",
