@@ -20,7 +20,7 @@ npm i
 
 ### 2. Deploy the Contract
 
-The deployment script (`scripts/deploy.js`) compiles and deploys and verifies the `NFTMarketplace.sol` contract to the specified `network-name`. To run the script:
+The deployment script (present in directory `backend\scripts\deploy.js`) compiles and deploys the `NFTMarketplace.sol` contract to the specified `network-name`. To run the script:
 
 ```shell
 npx hardhat run scripts/deploy.js --network <network-name>
