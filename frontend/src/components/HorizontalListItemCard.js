@@ -11,6 +11,7 @@ const HorizontalListItemCard = ({ item }) => {
       flexShrink="0"
       px="18px"
       py="20px"
+      my={4}
       display="flex"
       flexDirection="column"
     >
