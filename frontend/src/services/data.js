@@ -154,3 +154,46 @@ export const getRankingsData = () => {
     },
   ];
 };
+
+export const onboardingContent = [
+  {
+    heading: "Welcome to the App!",
+    body: "Let's get you started.",
+  },
+  {
+    heading: "Step 1: Connect your wallet",
+    body: "Connect your wallet to access all features.",
+  },
+  {
+    heading: "Step 2: Explore the marketplace",
+    body: "Discover unique NFTs and browse collections.",
+  },
+  {
+    heading: "Step 3: Create your own NFTs",
+    body: "Start trading by creating your own NFT collections.",
+  },
+  {
+    heading: "Step 4: Stay updated",
+    body: "Get news and notifications from the community.",
+  },
+  {
+    heading: "Step 5: Manage your profile",
+    body: "Track your activities and customize your profile.",
+  },
+  {
+    heading: "Step 6: Enjoy responsive design",
+    body: "Experience seamless usability across all devices.",
+  },
+  {
+    heading: "Need help?",
+    body: "Visit our Help Center for FAQs and support.",
+  },
+  {
+    heading: "Ready to dive in?",
+    body: "Start exploring now and enjoy the journey!",
+  },
+  {
+    heading: "Thank you!",
+    body: "Thank you for choosing our platform. We hope you enjoy your journey!",
+  },
+];
