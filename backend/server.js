@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const { sequelize } = require("./models");
 const { Client } = require("pg");
 const errorHandler = require("./middleware/errorHandler");
@@ -49,6 +50,11 @@ const startServer = async () => {
     console.log("Models synchronized with the database.");
 
     const app = express();
+
+    app.use(cors({ origin: "http://localhost:3000" }));
+
+    app.use(cors());
+
     app.use(express.json());
 
     app.use("/api/", nftRoutes);
