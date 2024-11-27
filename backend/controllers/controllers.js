@@ -490,22 +490,23 @@ exports.buyNFT = async (req, res, next) => {
     const { nftId, buyerWallet } = req.body;
 
     const buyerId = await ensureUserExists(buyerWallet);
-
     const nft = await NFT.findByPk(nftId);
 
     if (!nft) {
       return res.status(404).json({ message: "NFT not found" });
     }
 
-    const tx = await nftMarketplace.buyNFT(nft.nftContract, nft.tokenId, {
-      value: ethers.parseEther(nft.price.toString()),
+    const tx = await nftMarketplace.buyNFT(nft.id, {
+      value: nft.price,
     });
+
+    const receipt = await tx.wait();
 
     await Transaction.create({
       nftId: nftId,
       buyerId: buyerId,
       sellerId: nft.sellerId,
-      amount: nft.price,
+      value: nft.price,
     });
 
     nft.sellerId = buyerId;
@@ -514,9 +515,10 @@ exports.buyNFT = async (req, res, next) => {
     res.status(200).json({
       message: "NFT purchased successfully",
       nft,
-      tx,
+      receipt,
     });
   } catch (error) {
+    console.error("Error buying NFT: ", error);
     next(error);
   }
 };
