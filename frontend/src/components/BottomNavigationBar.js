@@ -10,7 +10,7 @@ const BottomNavigationBar = () => {
     { label: "Home", icon: "/home.svg", route: "/" },
     { label: "Explore", icon: "/explore.svg", route: "/explore" },
     { label: "News", icon: "/news.svg", route: "/news" },
-    { label: "Account", icon: "/user.svg", route: "/account" },
+    { label: "Account", icon: "/user.png", route: "/account" },
   ];
 
   useEffect(() => {
