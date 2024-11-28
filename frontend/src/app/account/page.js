@@ -5,15 +5,15 @@ import {
   Flex,
   Avatar,
   Text,
+  Button,
+  HStack,
   VStack,
-  Divider,
-  Heading,
-  Grid,
   Spinner,
   Alert,
   AlertIcon,
   Image,
 } from "@chakra-ui/react";
+import SectionHeader from "../../components/SectionHeader";
 
 const AccountsPage = () => {
   const [userData, setUserData] = useState({
@@ -84,62 +84,116 @@ const AccountsPage = () => {
   }
 
   return (
-    <Box px={4} pt={4}>
-      <Flex align="center" mb={8}>
-        <Avatar size="xl" name={userData.name} bg="#19976A" />
-        <VStack align="start" ml={4}>
-          <Text fontSize="xl" fontWeight="bold">
-            {userData.name}
-          </Text>
-          <Text fontSize="md" color="gray.500">
-            {userData.email}
-          </Text>
-          <Text fontSize="sm" color="gray.500">
-            Wallet: {userData.walletAddress}
-          </Text>
-        </VStack>
-      </Flex>
+    <Box bg="#FAFAFA" pb="82px" pt="28px" px="20px">
+      <Box
+        p={4}
+        borderRadius="md"
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        gap={2}
+      >
+        <Avatar name={"Aradhya Jain"} size="xl" bg="#19976A"></Avatar>
 
-      <Divider mb={8} />
+        <Text fontSize="sm" fontWeight="medium">
+          {"ajain@qodeleaf.com"}
+        </Text>
 
-      <Box mb={8}>
-        <Heading size="md" mb={4}>
-          Owned NFTs
-        </Heading>
-        <Grid templateColumns="repeat(auto-fill, minmax(200px, 1fr))" gap={4}>
+        <Text fontSize="sm" color="gray.500">
+          {"0x52B2c1fD38dFf711ED203898B53012e859318D30"}
+        </Text>
+      </Box>
+
+      <Box mt="20px" mb="4px">
+        <SectionHeader
+          sectionHeaderTitle="Owned NFTs"
+          rightComponent={
+            <Button
+              variant="link"
+              fontSize="14px"
+              fontWeight="600"
+              color="#19976A"
+              lineHeight="16.8px"
+              _hover={{ textDecoration: "underline" }}
+              onClick={() => console.log("See All clicked")}
+            >
+              See All
+            </Button>
+          }
+        />
+        <HStack
+          overflowX="auto"
+          spacing={4}
+          css={{
+            "&::-webkit-scrollbar": { display: "none" },
+            "-ms-overflow-style": "none",
+            "scrollbar-width": "none",
+          }}
+        >
           {userData.ownedNFTs.map((nft) => (
             <Box
               key={nft.id}
-              borderWidth="1px"
-              borderRadius="lg"
+              borderRadius="2xl"
               overflow="hidden"
               p={4}
+              m={2}
               boxShadow="md"
+              minWidth="200px"
+              height="300px"
+              display="flex"
+              flexDirection="column"
+              justifyContent="space-between"
             >
-              <Image
-                src={nft.image}
-                alt={nft.name}
+              <Box
+                height="180px"
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                bg="gray.100"
                 borderRadius="8px"
-                objectFit="cover"
-                width="100%"
-              />
-              <Text mt={2} fontWeight="bold">
-                {nft.name}
-              </Text>
-              <Text fontSize="sm" color="gray.600">
-                {nft.description}
-              </Text>
+              >
+                {nft.image ? (
+                  <Image
+                    src={nft.image}
+                    alt={nft.name}
+                    borderRadius="8px"
+                    objectFit="cover"
+                    height="100%"
+                    width="100%"
+                  />
+                ) : (
+                  <Text fontSize="sm" color="gray.500">
+                    No Image Available
+                  </Text>
+                )}
+              </Box>
+              <Box mt={2}>
+                <Text fontWeight="bold">{nft.name}</Text>
+                <Text fontSize="sm" color="gray.600">
+                  {nft.description}
+                </Text>
+              </Box>
             </Box>
           ))}
-        </Grid>
+        </HStack>
       </Box>
-
-      <Divider mb={8} />
-
-      <Box pb="84px">
-        <Heading size="md" mb={4}>
-          Transaction History
-        </Heading>
+      <Box mt="20px" mb="4px">
+        <SectionHeader
+          sectionHeaderTitle="Transaction History"
+          rightComponent={
+            <Button
+              variant="link"
+              fontSize="14px"
+              fontWeight="600"
+              color="#19976A"
+              lineHeight="16.8px"
+              _hover={{ textDecoration: "underline" }}
+              onClick={() => console.log("See All clicked")}
+            >
+              See All
+            </Button>
+          }
+        />
         <VStack align="stretch" spacing={4}>
           {userData.transactionHistory.map((transaction) => (
             <Flex
