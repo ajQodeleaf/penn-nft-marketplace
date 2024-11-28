@@ -15,8 +15,8 @@ export default function Onboarding({ onComplete }) {
   };
 
   return (
-    <Box bg="#FAFAFA" height="100vh">
-      <Box bg="white" height="60%">
+    <Box bg="#FAFAFA" height="100vh" display="flex" flexDirection="column">
+      <Box height="68vh" bg="lightblue">
         <Image
           src="/header.svg"
           alt="Header Image"
@@ -25,14 +25,12 @@ export default function Onboarding({ onComplete }) {
           height="100%"
         />
       </Box>
-
-      <Box bg="white" pt="40px" height="40%">
+      <Box bg="white">
         <Box
-          height="128px"
+          mt="8px"
+          height="80px"
           bg="white"
-          borderRadius="md"
-          boxShadow="sm"
-          mx="43px"
+          mx="12px"
           display="flex"
           flexDirection="column"
           justifyContent="center"
@@ -44,19 +42,16 @@ export default function Onboarding({ onComplete }) {
             fontWeight="600"
             lineHeight="33.6px"
             letterSpacing="-0.005em"
-            textUnderlinePosition="from-font"
             noOfLines={2}
           >
             {onboardingContent[currentIndex].heading}
           </Text>
-          <Box height="12px" />
           <Text
             fontFamily="Neue Haas Grotesk Display Pro"
             fontSize="16px"
             fontWeight="500"
             lineHeight="24px"
             textAlign="center"
-            textUnderlinePosition="from-font"
             noOfLines={2}
           >
             {onboardingContent[currentIndex].body}
@@ -68,7 +63,7 @@ export default function Onboarding({ onComplete }) {
           display="flex"
           alignItems="center"
           justifyContent="center"
-          mt="28px"
+          mt="20px"
         >
           <HStack spacing="8px">
             {Array.from({ length: onboardingContent.length }, (_, index) => (
@@ -83,7 +78,7 @@ export default function Onboarding({ onComplete }) {
           </HStack>
         </Box>
         <Box
-          mt="52px"
+          mt="20px"
           mx="32px"
           height="52px"
           display="flex"
