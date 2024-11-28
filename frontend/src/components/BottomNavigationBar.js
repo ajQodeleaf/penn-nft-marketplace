@@ -1,9 +1,11 @@
-import { useRouter } from "next/navigation";
+"use client";
+import { usePathname, useRouter } from "next/navigation";
 import { Box, Flex, Image, Text } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 
 const BottomNavigationBar = () => {
   const router = useRouter();
+  const pathname = usePathname();
   const [activeRoute, setActiveRoute] = useState("/");
 
   const navItems = [
@@ -14,8 +16,8 @@ const BottomNavigationBar = () => {
   ];
 
   useEffect(() => {
-    setActiveRoute(router.pathname || "/");
-  }, [router.pathname]);
+    setActiveRoute(pathname || "/");
+  }, [pathname]);
 
   return (
     <Box
