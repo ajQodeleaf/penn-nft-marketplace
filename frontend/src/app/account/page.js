@@ -14,6 +14,8 @@ import {
   Image,
 } from "@chakra-ui/react";
 import SectionHeader from "../../components/SectionHeader";
+import HorizontalList from "../../components/HorizontalList";
+import { useWallet } from "../../context/WalletContext";
 
 const AccountsPage = () => {
   const [userData, setUserData] = useState({
@@ -25,6 +27,7 @@ const AccountsPage = () => {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const { account } = useWallet();
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -37,7 +40,8 @@ const AccountsPage = () => {
             id: tx.nft.id,
             name: tx.nft.name,
             description: tx.nft.description,
-            image: tx.nft.metadataURI,
+            metadataURI: tx.nft.metadataURI,
+            price: tx.nft.price,
           }));
 
           const transactionHistory = data.transactions.map((tx) => ({
@@ -100,7 +104,7 @@ const AccountsPage = () => {
         </Text>
 
         <Text fontSize="sm" color="gray.500">
-          {"0x52B2c1fD38dFf711ED203898B53012e859318D30"}
+          {account.toString()}
         </Text>
       </Box>
 
@@ -121,62 +125,9 @@ const AccountsPage = () => {
             </Button>
           }
         />
-        <HStack
-          overflowX="auto"
-          spacing={4}
-          css={{
-            "&::-webkit-scrollbar": { display: "none" },
-            "-ms-overflow-style": "none",
-            "scrollbar-width": "none",
-          }}
-        >
-          {userData.ownedNFTs.map((nft) => (
-            <Box
-              key={nft.id}
-              borderRadius="2xl"
-              overflow="hidden"
-              p={4}
-              m={2}
-              boxShadow="md"
-              minWidth="200px"
-              height="300px"
-              display="flex"
-              flexDirection="column"
-              justifyContent="space-between"
-            >
-              <Box
-                height="180px"
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                bg="gray.100"
-                borderRadius="8px"
-              >
-                {nft.image ? (
-                  <Image
-                    src={nft.image}
-                    alt={nft.name}
-                    borderRadius="8px"
-                    objectFit="cover"
-                    height="100%"
-                    width="100%"
-                  />
-                ) : (
-                  <Text fontSize="sm" color="gray.500">
-                    No Image Available
-                  </Text>
-                )}
-              </Box>
-              <Box mt={2}>
-                <Text fontWeight="bold">{nft.name}</Text>
-                <Text fontSize="sm" color="gray.600">
-                  {nft.description}
-                </Text>
-              </Box>
-            </Box>
-          ))}
-        </HStack>
+        <HorizontalList items={userData.ownedNFTs} />
       </Box>
+
       <Box mt="20px" mb="4px">
         <SectionHeader
           sectionHeaderTitle="Transaction History"
