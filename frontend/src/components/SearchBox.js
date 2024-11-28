@@ -1,6 +1,13 @@
 import { Box, Flex, Image, Text } from "@chakra-ui/react";
+import { useRouter } from "next/navigation";
 
 const SearchBox = () => {
+  const router = useRouter();
+
+  const handleClick = () => {
+    router.push("/search");
+  };
+
   return (
     <Box
       height="48px"
@@ -10,6 +17,9 @@ const SearchBox = () => {
       bg="#F0F0F0"
       px="24px"
       pt="10px"
+      cursor="pointer"
+      onClick={handleClick}
+      _hover={{ bg: "#E0E0E0" }}
     >
       <Flex align="center">
         <Image
