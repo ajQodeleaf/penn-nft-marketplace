@@ -1,23 +1,30 @@
-'use client';
+"use client";
+import { usePathname } from "next/navigation";
 import { ChakraProvider } from "@chakra-ui/react";
-import ConnectWalletWrapper from "../components/ConnectWalletWrapper";
 import { WalletProvider } from "../context/WalletContext";
+import { OnboardingProvider } from "../context/OnboardingContext";
+import ConnectWalletWrapper from "../components/ConnectWalletWrapper";
 import theme from "../styles/theme";
 
 export default function RootLayout({ children }) {
+  const pathname = usePathname();
+  const isSearchRoute = pathname.startsWith("/search");
+
   return (
     <html lang="en">
       <body>
         <ChakraProvider theme={theme}>
           <WalletProvider>
-            <ConnectWalletWrapper>
-              {children}
-            </ConnectWalletWrapper>
+            <OnboardingProvider>
+              {isSearchRoute ? (
+                children
+              ) : (
+                <ConnectWalletWrapper>{children}</ConnectWalletWrapper>
+              )}
+            </OnboardingProvider>
           </WalletProvider>
         </ChakraProvider>
       </body>
     </html>
   );
 }
-
-
