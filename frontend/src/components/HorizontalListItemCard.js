@@ -1,6 +1,12 @@
 import { Box, Flex, Text, Image } from "@chakra-ui/react";
 
+const weiToEther = (wei) => {
+  return (parseFloat(wei) / 1e18).toFixed(2);
+};
+
 const HorizontalListItemCard = ({ item }) => {
+  const priceInEther = weiToEther(item.price);
+
   return (
     <Box
       width="260px"
@@ -17,8 +23,8 @@ const HorizontalListItemCard = ({ item }) => {
     >
       <Box height="220px" mb="22px">
         <Image
-          src={item.imageSrc}
-          alt={item.imageAlt}
+          src={item.metadataURI}
+          alt={item.name}
           objectFit="cover"
           width="100%"
           height="100%"
@@ -41,7 +47,7 @@ const HorizontalListItemCard = ({ item }) => {
               color="black"
               mr="6px"
             >
-              {item.title}
+              {item.name}
             </Text>
             {item.isVerified && (
               <Box
@@ -80,7 +86,7 @@ const HorizontalListItemCard = ({ item }) => {
                 lineHeight="19.2px"
                 ml="6px"
               >
-                {item.ethAmount} ETH
+                {priceInEther} ETH
               </Text>
             </Box>
 
@@ -92,7 +98,7 @@ const HorizontalListItemCard = ({ item }) => {
                 ml="6px"
                 color="#19976A"
               >
-                {item.percentageChange}%
+                {item.percentageChange || "0%"}
               </Text>
             </Box>
           </Flex>
