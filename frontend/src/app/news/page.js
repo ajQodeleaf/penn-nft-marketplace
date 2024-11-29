@@ -47,7 +47,6 @@ const NewsPage = () => {
               color="#19976A"
               lineHeight="16.8px"
               _hover={{ textDecoration: "underline" }}
-              onClick={() => console.log("See All clicked")}
             >
               See All
             </Button>
@@ -65,7 +64,6 @@ const NewsPage = () => {
                 color="#19976A"
                 lineHeight="16.8px"
                 _hover={{ textDecoration: "underline" }}
-                onClick={() => console.log("See All clicked")}
               >
                 See All
               </Button>
