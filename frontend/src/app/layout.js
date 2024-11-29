@@ -9,6 +9,8 @@ import theme from "../styles/theme";
 export default function RootLayout({ children }) {
   const pathname = usePathname();
   const isSearchRoute = pathname.startsWith("/search");
+  const isSeeAllRoute = pathname.startsWith("/see-all");
+  const isNFTDetailsRoute = pathname.startsWith("/nftDetails");
 
   return (
     <html lang="en">
@@ -16,7 +18,7 @@ export default function RootLayout({ children }) {
         <ChakraProvider theme={theme}>
           <WalletProvider>
             <OnboardingProvider>
-              {isSearchRoute ? (
+              {isSearchRoute || isSeeAllRoute || isNFTDetailsRoute ? (
                 children
               ) : (
                 <ConnectWalletWrapper>{children}</ConnectWalletWrapper>
