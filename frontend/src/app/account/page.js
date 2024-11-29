@@ -1,17 +1,16 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   Box,
   Flex,
   Avatar,
   Text,
   Button,
-  HStack,
   VStack,
   Spinner,
   Alert,
   AlertIcon,
-  Image,
 } from "@chakra-ui/react";
 import SectionHeader from "../../components/SectionHeader";
 import HorizontalList from "../../components/HorizontalList";
@@ -28,6 +27,7 @@ const AccountsPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const { account } = useWallet();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -87,6 +87,14 @@ const AccountsPage = () => {
     );
   }
 
+  const handleSeeAllClick = (section, data) => {
+    router.push(
+      `/see-all?section=${encodeURIComponent(
+        section
+      )}&data=${encodeURIComponent(JSON.stringify(data))}`
+    );
+  };
+
   return (
     <Box bg="#FAFAFA" pb="82px" pt="28px" px="20px">
       <Box
@@ -97,10 +105,10 @@ const AccountsPage = () => {
         alignItems="center"
         gap={2}
       >
-        <Avatar name={"Aradhya Jain"} size="xl" bg="#19976A"></Avatar>
+        <Avatar name={"Cardinal Navigator"} size="xl" bg="#19976A"></Avatar>
 
         <Text fontSize="sm" fontWeight="medium">
-          {"ajain@qodeleaf.com"}
+          {"cardinal.navi@gmail.com"}
         </Text>
 
         <Text fontSize="sm" color="gray.500">
@@ -119,7 +127,9 @@ const AccountsPage = () => {
               color="#19976A"
               lineHeight="16.8px"
               _hover={{ textDecoration: "underline" }}
-              onClick={() => console.log("See All clicked")}
+              onClick={() =>
+                handleSeeAllClick("Owned NFTs", userData.ownedNFTs)
+              }
             >
               See All
             </Button>
@@ -129,22 +139,7 @@ const AccountsPage = () => {
       </Box>
 
       <Box mt="20px" mb="4px">
-        <SectionHeader
-          sectionHeaderTitle="Transaction History"
-          rightComponent={
-            <Button
-              variant="link"
-              fontSize="14px"
-              fontWeight="600"
-              color="#19976A"
-              lineHeight="16.8px"
-              _hover={{ textDecoration: "underline" }}
-              onClick={() => console.log("See All clicked")}
-            >
-              See All
-            </Button>
-          }
-        />
+        <SectionHeader sectionHeaderTitle="Transaction History" />
         <VStack align="stretch" spacing={4}>
           {userData.transactionHistory.map((transaction) => (
             <Flex
