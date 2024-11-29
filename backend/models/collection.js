@@ -63,7 +63,6 @@ module.exports = (sequelize, DataTypes) => {
 
   Collection.beforeCreate((collection) => {
     collection.contractAddress = collection.contractAddress.toLowerCase();
-    collection.metadataURI = collection.metadataURI.toLowerCase();
   });
 
   Collection.associate = (models) => {
