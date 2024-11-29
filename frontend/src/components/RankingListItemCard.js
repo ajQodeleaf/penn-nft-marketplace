@@ -1,6 +1,6 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 
-const RankingListItemCard = ({ listItem }) => {
+const RankingListItemCard = ({ listItem, index }) => {
   return (
     <Box
       height="48px"
@@ -15,7 +15,7 @@ const RankingListItemCard = ({ listItem }) => {
         mr="16px"
         color="#8A8E85"
       >
-        #{listItem.rank}
+        #{index + 1}
       </Text>
 
       <Box position="relative" w="42px" h="42px" mr="12px">
@@ -63,7 +63,7 @@ const RankingListItemCard = ({ listItem }) => {
         color="#19976A"
         ml="16px"
       >
-        {listItem.priceChange}%
+        {listItem.priceChange}
       </Text>
     </Box>
   );
