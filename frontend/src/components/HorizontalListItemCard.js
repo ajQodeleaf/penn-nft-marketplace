@@ -1,14 +1,28 @@
+"use client";
 import { Box, Flex, Text, Image } from "@chakra-ui/react";
+import { FiImage } from "react-icons/fi";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const weiToEther = (wei) => {
   return (parseFloat(wei) / 1e18).toFixed(2);
 };
 
 const HorizontalListItemCard = ({ item }) => {
+  const [imageError, setImageError] = useState(false);
   const priceInEther = weiToEther(item.price);
+  const router = useRouter();
+
+  const handleClick = () => {
+    localStorage.setItem("selectedNFT", JSON.stringify(item));
+
+    router.push(`/nftDetails`);
+  };
 
   return (
     <Box
+      onClick={handleClick}
+      cursor="pointer"
       width="260px"
       height="100%"
       bg="white"
@@ -20,16 +34,31 @@ const HorizontalListItemCard = ({ item }) => {
       my={4}
       display="flex"
       flexDirection="column"
+      _hover={{ boxShadow: "md", transform: "scale(1.02)", transition: "0.2s" }}
     >
-      <Box height="220px" mb="22px">
-        <Image
-          src={item.metadataURI}
-          alt={item.name}
-          objectFit="cover"
-          width="100%"
-          height="100%"
-          borderRadius="12px"
-        />
+      <Box
+        height="220px"
+        mb="22px"
+        position="relative"
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        bg={imageError ? "#f5f5f5" : "transparent"}
+        borderRadius="12px"
+      >
+        {!imageError ? (
+          <Image
+            src={item.metadataURI}
+            alt={item.name}
+            objectFit="cover"
+            width="100%"
+            height="100%"
+            borderRadius="12px"
+            onError={() => setImageError(true)}
+          />
+        ) : (
+          <FiImage size={50} color="#8A8E85" />
+        )}
       </Box>
 
       <Box flex="1" bg="transparent" display="flex" flexDirection="column">
@@ -86,7 +115,7 @@ const HorizontalListItemCard = ({ item }) => {
                 lineHeight="19.2px"
                 ml="6px"
               >
-                {priceInEther} ETH
+                {priceInEther === "0.00" ? item.price : priceInEther} ETH
               </Text>
             </Box>
 
