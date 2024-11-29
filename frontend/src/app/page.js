@@ -1,5 +1,6 @@
 "use client";
 import { Box, Flex, Text, Image, Button } from "@chakra-ui/react";
+import { useRouter } from "next/navigation";
 import SearchBox from "../components/SearchBox";
 import SectionHeader from "../components/SectionHeader";
 import NewsList from "../components/NewsList";
@@ -8,44 +9,35 @@ import CategoriesList from "../components/CategoriesList";
 import { getCategories, getNewsData, getNFTItems } from "../services/data";
 
 export default function Home() {
+  const router = useRouter();
   const items = getCategories();
   const newsData = getNewsData();
-  const itemsData2 = getNFTItems();
+  const nftItems = getNFTItems();
+
+  const handleSeeAllClick = (section, data) => {
+    router.push(
+      `/see-all?section=${encodeURIComponent(
+        section
+      )}&data=${encodeURIComponent(JSON.stringify(data))}`
+    );
+  };
 
   return (
     <Box bg="#FAFAFA" pb="82px" px="20px" pt="20px">
-      <Flex
-        height="24px"
-        mb="20px"
-        align="center"
-        justify="space-between"
-        width="100%"
-      >
-        <Box
-          flex="263"
-          display="flex"
-          alignItems="center"
-          justifyContent="start"
-        >
+      <Flex height="24px" mb="20px" align="center" justify="space-between">
+        <Box flex="263">
           <Text fontSize="20px" fontWeight="600">
             Explore collectible assets!
           </Text>
         </Box>
-
         <Box flex="72">
-          <Flex width="100%" justify="space-between" align="center">
+          <Flex justify="space-between">
             <Image
               src="/notification.svg"
               alt="Notification Icon"
               boxSize="24px"
-              objectFit="contain"
             />
-            <Image
-              src="/wallet.svg"
-              alt="Wallet Icon"
-              boxSize="24px"
-              objectFit="contain"
-            />
+            <Image src="/wallet.svg" alt="Wallet Icon" boxSize="24px" />
           </Flex>
         </Box>
       </Flex>
@@ -59,16 +51,15 @@ export default function Home() {
               fontSize="14px"
               fontWeight="600"
               color="#19976A"
-              lineHeight="16.8px"
               _hover={{ textDecoration: "underline" }}
-              onClick={() => console.log("See All clicked")}
+              onClick={() => handleSeeAllClick("NFT Collections", nftItems)}
             >
               See All
             </Button>
           }
-        ></SectionHeader>
+        />
         <CategoriesList items={items} />
-        <HorizontalList items={itemsData2}></HorizontalList>
+        <HorizontalList items={nftItems} />
       </Box>
       <Box mt="40px" mb="4px">
         <SectionHeader
@@ -79,15 +70,14 @@ export default function Home() {
               fontSize="14px"
               fontWeight="600"
               color="#19976A"
-              lineHeight="16.8px"
               _hover={{ textDecoration: "underline" }}
-              onClick={() => console.log("See All clicked")}
+              onClick={() => handleSeeAllClick("Notable NFT Drops", nftItems)}
             >
               See All
             </Button>
           }
-        ></SectionHeader>
-        <HorizontalList items={itemsData2}></HorizontalList>
+        />
+        <HorizontalList items={nftItems} />
       </Box>
       <Box mt="48px">
         <SectionHeader
@@ -98,15 +88,12 @@ export default function Home() {
               fontSize="14px"
               fontWeight="600"
               color="#19976A"
-              lineHeight="16.8px"
               _hover={{ textDecoration: "underline" }}
-              onClick={() => console.log("See All clicked")}
             >
               See All
             </Button>
           }
         />
-
         <NewsList newsData={newsData} />
       </Box>
     </Box>
