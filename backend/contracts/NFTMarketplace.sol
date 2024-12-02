@@ -9,6 +9,7 @@ contract NFTMarketplace {
         address nftContract;
         uint256 tokenId;
         uint256 price;
+        string name;
         string metadataURI;
         string description;
         bool isVerified;
@@ -50,9 +51,11 @@ contract NFTMarketplace {
         address indexed nftContract,
         uint256 tokenId,
         uint256 price,
+        string name,
         string metadataURI,
         string description
     );
+
     event NFTBought(
         uint256 indexed listingId,
         address indexed buyer,
@@ -161,6 +164,7 @@ contract NFTMarketplace {
         address nftContract,
         uint256 tokenId,
         uint256 price,
+        string calldata name,
         string calldata metadataURI,
         string calldata description,
         bool isVerified
@@ -181,6 +185,7 @@ contract NFTMarketplace {
             nftContract,
             tokenId,
             price,
+            name,
             metadataURI,
             description,
             isVerified
@@ -192,6 +197,7 @@ contract NFTMarketplace {
             nftContract,
             tokenId,
             price,
+            name,
             metadataURI,
             description
         );
@@ -250,9 +256,10 @@ contract NFTMarketplace {
         );
     }
 
-    function updateNFTListing(
+    function updateNFT(
         uint256 listingId,
         uint256 price,
+        string calldata name,
         string calldata metadataURI,
         string calldata description
     ) external isListed(listingId) {
@@ -267,6 +274,7 @@ contract NFTMarketplace {
         );
 
         listing.price = price;
+        listing.name = name;
         listing.metadataURI = metadataURI;
         listing.description = description;
 
@@ -276,6 +284,7 @@ contract NFTMarketplace {
             listing.nftContract,
             listing.tokenId,
             price,
+            name,
             metadataURI,
             description
         );
