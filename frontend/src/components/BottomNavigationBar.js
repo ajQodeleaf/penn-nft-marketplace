@@ -1,6 +1,7 @@
 "use client";
 import { usePathname, useRouter } from "next/navigation";
-import { Box, Flex, Image, Text } from "@chakra-ui/react";
+import { Box, Flex, Image, Text, Icon } from "@chakra-ui/react";
+import { MdList, MdShoppingCart } from "react-icons/md";
 import { useState, useEffect } from "react";
 
 const BottomNavigationBar = () => {
@@ -11,6 +12,16 @@ const BottomNavigationBar = () => {
   const navItems = [
     { label: "Home", icon: "/home.svg", route: "/" },
     { label: "Explore", icon: "/explore.svg", route: "/explore" },
+    {
+      label: "List",
+      icon: <MdList size="24px" color="#19976A" />,
+      route: "/list",
+    },
+    {
+      label: "Buy",
+      icon: <MdShoppingCart size="24px" color="#19976A" />,
+      route: "/buy",
+    },
     { label: "News", icon: "/news.svg", route: "/news" },
     { label: "Account", icon: "/user.png", route: "/account" },
   ];
@@ -54,7 +65,11 @@ const BottomNavigationBar = () => {
                 px="4"
                 py="2"
               >
-                <Image src={item.icon} alt={item.label} boxSize="24px" />
+                {typeof item.icon === "string" ? (
+                  <Image src={item.icon} alt={item.label} boxSize="24px" />
+                ) : (
+                  <Icon as={() => item.icon} />
+                )}
                 <Text
                   fontSize="14px"
                   fontWeight={600}
