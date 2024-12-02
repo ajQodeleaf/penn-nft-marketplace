@@ -398,6 +398,7 @@ exports.listNFT = async (req, res, next) => {
       nftContract,
       tokenId,
       price,
+      name,
       metadataURI,
       description,
       isVerified,
@@ -453,6 +454,7 @@ exports.listNFT = async (req, res, next) => {
       nftContract,
       tokenId,
       priceInEther,
+      name,
       metadataURI,
       description,
       isVerified
@@ -469,10 +471,10 @@ exports.listNFT = async (req, res, next) => {
       nftContract: nftContract,
       tokenId: tokenId,
       price: priceInEther,
+      name,
       metadataURI: metadataURI,
       description,
       isVerified: isVerified,
-      name: "NFT",
     });
 
     res.status(201).json({
@@ -496,7 +498,7 @@ exports.buyNFT = async (req, res, next) => {
       return res.status(404).json({ message: "NFT not found" });
     }
 
-    const tx = await nftMarketplace.buyNFT(nft.id, {
+    const tx = await nftMarketplace.buyNFT(nft.id - 1, {
       value: nft.price,
     });
 
