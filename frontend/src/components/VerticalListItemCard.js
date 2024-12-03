@@ -5,13 +5,16 @@ import { useState } from "react";
 import { MdBrokenImage } from "react-icons/md";
 import { useRouter } from "next/navigation";
 
+const weiToEth = (wei) => {
+  return parseFloat(wei) / 1e18;
+};
+
 const VerticalListItemCard = ({ item }) => {
   const [imageError, setImageError] = useState(false);
   const router = useRouter();
 
   const handleClick = () => {
     localStorage.setItem("selectedNFT", JSON.stringify(item));
-
     router.push(`/nftDetails`);
   };
 
@@ -106,7 +109,7 @@ const VerticalListItemCard = ({ item }) => {
                 lineHeight="19.2px"
                 ml="6px"
               >
-                {item.price} ETH
+                {weiToEth(item.price)} ETH
               </Text>
             </Box>
 
