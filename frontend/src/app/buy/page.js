@@ -35,7 +35,7 @@ const BuyPage = () => {
 
       if (response.ok) {
         const data = await response.json();
-        const transactionHash = data.tx.hash;
+        const transactionHash = data.receipt.hash;
 
         toast({
           title: "Success",
