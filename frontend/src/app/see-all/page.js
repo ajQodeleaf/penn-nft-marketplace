@@ -1,10 +1,18 @@
 "use client";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Box, SimpleGrid, Text, Flex, IconButton } from "@chakra-ui/react";
+import {
+  Box,
+  SimpleGrid,
+  Text,
+  Flex,
+  IconButton,
+  Spinner,
+} from "@chakra-ui/react";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import VerticalListItemCard from "../../components/VerticalListItemCard";
+import { Suspense } from "react";
 
-export default function SeeAllPage() {
+function SeeAllPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const section = searchParams.get("section") || "See All";
@@ -37,5 +45,13 @@ export default function SeeAllPage() {
         ))}
       </SimpleGrid>
     </Box>
+  );
+}
+
+export default function SeeAllPage() {
+  return (
+    <Suspense fallback={<Spinner size="xl" color="teal.500" />}>
+      <SeeAllPageContent />
+    </Suspense>
   );
 }
