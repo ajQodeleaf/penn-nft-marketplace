@@ -1,29 +1,14 @@
 const { Sequelize, DataTypes } = require("sequelize");
 require("dotenv").config();
 
-const {
-  DB_USERNAME,
-  DB_PASSWORD,
-  DB_HOSTNAME,
-  DB_NFT_MARKETPLACE,
-  NODE_ENV,
-} = process.env;
-
-const isProduction = NODE_ENV === "production";
-
-const DATABASE_URL = `postgres://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOSTNAME}/${DB_NFT_MARKETPLACE}`;
-
-const sequelize = new Sequelize(DATABASE_URL, {
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: "postgres",
-  logging: false,
-  dialectOptions: isProduction
-    ? {
-        ssl: {
-          require: true,
-          rejectUnauthorized: false,
-        },
-      }
-    : {},
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false,
+    },
+  },
 });
 
 const models = {
