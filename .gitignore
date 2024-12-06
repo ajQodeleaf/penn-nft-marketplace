@@ -4,6 +4,4 @@ package-lock.json
 jsconfig.json
 next.config.mjs
 .env
-artifacts
-cache
 .next
