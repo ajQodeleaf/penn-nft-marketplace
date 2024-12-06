@@ -1,85 +1,63 @@
-module.exports = (sequelize, DataTypes) => {
-  const Collection = sequelize.define(
-    "Collection",
-    {
-      id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-      },
-      name: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          len: [3, 100],
-        },
-      },
-      description: {
-        type: DataTypes.TEXT,
-        allowNull: true,
-      },
-      metadataURI: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          isUrl: true,
-        },
-      },
-      price: {
-        type: DataTypes.DECIMAL(18, 8),
-        allowNull: true,
-      },
-      isListed: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
-      },
-      isVerified: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
-      },
-      contractAddress: {
-        type: DataTypes.STRING,
-        unique: true,
-        allowNull: false,
-        validate: {
-          is: /^0x[a-fA-F0-9]{40}$/,
-        },
-      },
-      creatorId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
+const mongoose = require("mongoose");
+const mongooseSequence = require("mongoose-sequence")(mongoose);
+
+const collectionSchema = new mongoose.Schema(
+  {
+    collectionId: {
+      type: Number,
+      unique: true,
+    },
+    name: {
+      type: String,
+      required: true,
+      minlength: 3,
+      maxlength: 100,
+    },
+    description: {
+      type: String,
+    },
+    metadataURI: {
+      type: String,
+      required: true,
+      validate: {
+        validator: (value) => /^https?:\/\/.+/i.test(value),
+        message: "Invalid URL",
       },
     },
-    {
-      paranoid: true,
-      timestamps: true,
-      tableName: "Collections",
-      indexes: [
-        { fields: ["creatorId"] },
-        { fields: ["contractAddress"], unique: true },
-      ],
-    }
-  );
+    price: {
+      type: mongoose.Schema.Types.Decimal128,
+    },
+    isListed: {
+      type: Boolean,
+      default: false,
+    },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    contractAddress: {
+      type: String,
+      unique: true,
+      required: true,
+      match: /^0x[a-fA-F0-9]{40}$/,
+      set: (value) => value.toLowerCase(),
+    },
+    creatorId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
-  Collection.beforeCreate((collection) => {
-    collection.contractAddress = collection.contractAddress.toLowerCase();
-  });
+collectionSchema.plugin(mongooseSequence, { inc_field: "collectionId" });
 
-  Collection.associate = (models) => {
-    Collection.belongsTo(models.User, {
-      foreignKey: "creatorId",
-      as: "creator",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
-    });
+collectionSchema.index({ creatorId: 1 });
+collectionSchema.index({ contractAddress: 1 }, { unique: true });
 
-    Collection.hasMany(models.NFT, {
-      foreignKey: "collectionId",
-      as: "nfts",
-      onDelete: "SET NULL",
-      onUpdate: "CASCADE",
-    });
-  };
+const Collection = mongoose.model("Collection", collectionSchema);
 
-  return Collection;
-};
+module.exports = Collection;
