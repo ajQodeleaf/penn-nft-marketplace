@@ -1,75 +1,48 @@
-module.exports = (sequelize, DataTypes) => {
-  const Transaction = sequelize.define(
-    "Transaction",
-    {
-      id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-      },
-      value: {
-        type: DataTypes.DECIMAL(38, 18),
-        allowNull: false,
-        validate: {
-          min: 0.0,
-        },
-      },
-      nftId: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-      },
-      collectionId: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-      },
-      buyerId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-      },
-      sellerId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-      },
+const mongoose = require("mongoose");
+const mongooseSequence = require("mongoose-sequence")(mongoose);
+
+const transactionSchema = new mongoose.Schema(
+  {
+    transactionId: {
+      type: Number,
+      unique: true,
     },
-    {
-      timestamps: true,
-      paranoid: true,
-      tableName: "Transactions",
-      indexes: [
-        { fields: ["buyerId"] },
-        { fields: ["sellerId"] },
-        { fields: ["nftId"] },
-        { fields: ["collectionId"] },
-      ],
-    }
-  );
+    value: {
+      type: mongoose.Schema.Types.Decimal128,
+      required: true,
+      min: 0.0,
+    },
+    nftId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "NFT",
+    },
+    collectionId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Collection",
+    },
+    buyerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    sellerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
-  Transaction.associate = (models) => {
-    Transaction.belongsTo(models.User, {
-      foreignKey: "buyerId",
-      as: "buyer",
-      onDelete: "SET NULL",
-      onUpdate: "CASCADE",
-    });
-    Transaction.belongsTo(models.User, {
-      foreignKey: "sellerId",
-      as: "seller",
-      onDelete: "SET NULL",
-      onUpdate: "CASCADE",
-    });
-    Transaction.belongsTo(models.NFT, {
-      foreignKey: "nftId",
-      as: "nft",
-      onDelete: "SET NULL",
-      onUpdate: "CASCADE",
-    });
-    Transaction.belongsTo(models.Collection, {
-      foreignKey: "collectionId",
-      as: "collection",
-      onDelete: "SET NULL",
-      onUpdate: "CASCADE",
-    });
-  };
+transactionSchema.plugin(mongooseSequence, { inc_field: "transactionId" });
 
-  return Transaction;
-};
+transactionSchema.index({ buyerId: 1 });
+transactionSchema.index({ sellerId: 1 });
+transactionSchema.index({ nftId: 1 });
+transactionSchema.index({ collectionId: 1 });
+
+const Transaction = mongoose.model("Transaction", transactionSchema);
+
+module.exports = Transaction;
