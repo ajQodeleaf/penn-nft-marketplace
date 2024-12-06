@@ -1,98 +1,64 @@
-module.exports = (sequelize, DataTypes) => {
-  const NFT = sequelize.define(
-    "NFT",
-    {
-      id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-      },
-      name: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          len: [1, 100],
-        },
-      },
-      description: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-      },
-      metadataURI: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          isUrl: true,
-        },
-      },
-      price: {
-        type: DataTypes.DECIMAL(38, 0),
-        allowNull: false,
-        validate: {
-          isNumeric: true,
-        },
-      },
-      isVerified: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
-      },
-      sellerId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-      },
-      nftContract: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          is: /^0x[a-fA-F0-9]{40}$/,
-        },
-      },
-      tokenId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        validate: {
-          min: 0,
-        },
-      },
-      collectionId: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
+const mongoose = require("mongoose");
+const mongooseSequence = require("mongoose-sequence")(mongoose);
+
+const nftSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+      maxlength: 100,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
+    metadataURI: {
+      type: String,
+      required: true,
+      validate: {
+        validator: (value) => /^https?:\/\/.+/i.test(value),
+        message: "Invalid URL",
       },
     },
-    {
-      paranoid: true,
-      timestamps: true,
-      tableName: "NFTs",
-      indexes: [
-        { fields: ["sellerId"] },
-        { fields: ["collectionId"] },
-        { fields: ["nftContract", "tokenId"], unique: true },
-      ],
-    }
-  );
+    price: {
+      type: mongoose.Schema.Types.Decimal128,
+      required: true,
+    },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    sellerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    nftContract: {
+      type: String,
+      required: true,
+      match: /^0x[a-fA-F0-9]{40}$/,
+    },
+    tokenId: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+    collectionId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Collection",
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
-  NFT.associate = (models) => {
-    NFT.belongsTo(models.User, {
-      foreignKey: "sellerId",
-      as: "seller",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
-    });
+nftSchema.plugin(mongooseSequence, { inc_field: "tokenId" });
 
-    NFT.belongsTo(models.Collection, {
-      foreignKey: "collectionId",
-      as: "collection",
-      onDelete: "SET NULL",
-      onUpdate: "CASCADE",
-    });
+nftSchema.index({ sellerId: 1 });
+nftSchema.index({ collectionId: 1 });
+nftSchema.index({ nftContract: 1, tokenId: 1 }, { unique: true });
 
-    NFT.hasMany(models.Transaction, {
-      foreignKey: "nftId",
-      as: "transactions",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
-    });
-  };
+const NFT = mongoose.model("NFT", nftSchema);
 
-  return NFT;
-};
+module.exports = NFT;
