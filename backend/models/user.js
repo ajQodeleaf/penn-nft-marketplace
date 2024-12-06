@@ -1,54 +1,46 @@
-module.exports = (sequelize, DataTypes) => {
-  const User = sequelize.define(
-    "User",
-    {
-      id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-      },
-      walletAddress: {
-        type: DataTypes.STRING,
-        unique: true,
-        allowNull: false,
-        validate: {
-          is: /^0x[a-fA-F0-9]{40}$/i,
-        },
-      },
-      name: {
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate: {
-          len: [1, 50],
-        },
-      },
+const mongoose = require("mongoose");
+const mongooseSequence = require("mongoose-sequence")(mongoose);
+
+const userSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: Number,
+      unique: true,
     },
-    {
-      timestamps: true,
-      paranoid: true,
-      tableName: "Users",
-    }
-  );
+    walletAddress: {
+      type: String,
+      unique: true,
+      required: true,
+      match: /^0x[a-fA-F0-9]{40}$/i,
+      set: (value) => value.toLowerCase(),
+    },
+    name: {
+      type: String,
+      maxlength: 50,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
-  User.beforeCreate((user) => {
-    user.walletAddress = user.walletAddress.toLowerCase();
-  });
+userSchema.plugin(mongooseSequence, { inc_field: "userId" });
 
-  User.beforeUpdate((user) => {
-    user.walletAddress = user.walletAddress.toLowerCase();
-  });
+userSchema.virtual("nfts", {
+  ref: "NFT",
+  localField: "_id",
+  foreignField: "sellerId",
+});
 
-  User.associate = (models) => {
-    User.hasMany(models.NFT, {
-      foreignKey: "sellerId",
-      as: "nfts",
-    });
+userSchema.virtual("transactions", {
+  ref: "Transaction",
+  localField: "_id",
+  foreignField: "buyerId",
+});
 
-    User.hasMany(models.Transaction, {
-      foreignKey: "buyerId",
-      as: "transactions",
-    });
-  };
+userSchema.set("toJSON", { virtuals: true });
+userSchema.set("toObject", { virtuals: true });
 
-  return User;
-};
+const User = mongoose.model("User", userSchema);
+
+module.exports = User;
