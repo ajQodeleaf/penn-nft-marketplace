@@ -15,7 +15,7 @@ const startServer = async () => {
 
     app.use(express.json());
 
-    app.use("/api/", nftRoutes);
+    app.use("/api", nftRoutes);
 
     app.use(errorHandler);
 
