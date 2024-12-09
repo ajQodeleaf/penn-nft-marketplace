@@ -28,6 +28,10 @@ const {
   getRankings,
 } = require("../controllers/controllers");
 
+router.get("/", (req, res) => {
+  res.send("Welcome to the NFT Marketplace API");
+});
+
 router.get("/users", getAllUsers);
 router.get("/user/:id", getUser);
 router.get("/user/wallet/:walletAddress", getUserByWallet);
