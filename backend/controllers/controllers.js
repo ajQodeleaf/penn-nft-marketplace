@@ -140,7 +140,7 @@ exports.listNFT = catchAsync(async (req, res) => {
     description,
     isVerified
   );
-  await handleBlockchainTransaction(tx);
+  const receipt = await handleBlockchainTransaction(tx);
 
   const nft = await NFT.create({
     sellerId,
@@ -153,7 +153,7 @@ exports.listNFT = catchAsync(async (req, res) => {
     isVerified,
   });
 
-  res.status(201).json({ message: "NFT listed successfully", nft });
+  res.status(201).json({ message: "NFT listed successfully", nft, receipt });
 });
 
 exports.buyNFT = catchAsync(async (req, res) => {
@@ -167,14 +167,12 @@ exports.buyNFT = catchAsync(async (req, res) => {
 
   try {
     const nft = await NFT.findOne({ tokenId: Number(nftId) });
-    console.log(`NFT Found with tokenID ${nftId}:- `, nft);
 
     if (!nft) {
       return res.status(404).json({ message: "NFT not found" });
     }
 
     const priceInEther = ethers.parseUnits(nft.price.toString(), "ether");
-    console.log("Price In Ether:- ", priceInEther);
 
     const tx = await nftMarketplace.buyNFT(nft.tokenId - 1, {
       value: priceInEther,
