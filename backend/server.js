@@ -14,12 +14,7 @@ const startServer = async () => {
       next();
     });
 
-    const allowedOrigins = [
-      "http://localhost:3000",
-      "http://localhost:3000/api",
-      "https://penn-nft-marketplace-aywl.vercel.app",
-      "https://penn-nft-marketplace-aywl-o1ziw03b4-aradhya-jains-projects.vercel.app",
-    ];
+    const allowedOrigins = ["http://localhost:3000", process.env.FRONTEND_URL];
 
     app.use(
       cors({
