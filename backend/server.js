@@ -8,10 +8,33 @@ require("./models/db");
 const startServer = async () => {
   try {
     const app = express();
+    
+    app.use((req, res, next) => {
+      console.log("Incoming Origin:", req.headers.origin);
+      next();
+    });
 
-    app.use(cors({ origin: `${process.env.FRONTEND_URL}` }));
+    const allowedOrigins = [
+      "https://penn-nft-marketplace-aywl.vercel.app",
+      "https://penn-nft-marketplace-aywl-o1ziw03b4-aradhya-jains-projects.vercel.app",
+    ];
 
-    app.use(cors());
+    app.use(
+      cors({
+        origin: (origin, callback) => {
+          if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+          } else {
+            console.error(`Blocked by CORS: ${origin}`);
+            callback(new Error("Not allowed by CORS"));
+          }
+        },
+        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        credentials: true,
+      })
+    );
+
+    app.options("*", cors());
 
     app.use(express.json());
 
