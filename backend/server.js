@@ -11,15 +11,18 @@ const startServer = async () => {
 
     app.use((req, res, next) => {
       console.log("Incoming Origin:", req.headers.origin);
+      console.log("Request URL:", req.url);
+      console.log("Request Method:", req.method);
       next();
     });
-    console.log("Frontend URL:- ", process.env.FRONTEND_URL);
+
+    console.log("Frontend URL:", process.env.FRONTEND_URL);
 
     const allowedOrigins = [
       "http://localhost:3000",
-      "https://penn-nft-marketplace-aywl.vercel.app/api",
-      "https://penn-nft-marketplace-aywl-aradhya-jains-projects.vercel.app/api",
-      `${process.env.FRONTEND_URL}/api`,
+      "https://penn-nft-marketplace-aywl.vercel.app",
+      "https://penn-nft-marketplace-aywl-aradhya-jains-projects.vercel.app",
+      process.env.FRONTEND_URL,
     ];
 
     app.use(
