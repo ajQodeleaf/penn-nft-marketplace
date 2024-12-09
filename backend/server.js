@@ -8,13 +8,15 @@ require("./models/db");
 const startServer = async () => {
   try {
     const app = express();
-    
+
     app.use((req, res, next) => {
       console.log("Incoming Origin:", req.headers.origin);
       next();
     });
 
     const allowedOrigins = [
+      "http://localhost:3000",
+      "http://localhost:3000/api",
       "https://penn-nft-marketplace-aywl.vercel.app",
       "https://penn-nft-marketplace-aywl-o1ziw03b4-aradhya-jains-projects.vercel.app",
     ];
