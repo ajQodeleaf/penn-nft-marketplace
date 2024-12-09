@@ -159,17 +159,22 @@ exports.listNFT = catchAsync(async (req, res) => {
 exports.buyNFT = catchAsync(async (req, res) => {
   const { nftId, buyerWallet } = req.body;
 
-  const buyerId = await ensureUserExists(buyerWallet);
-
-  const nft = await NFT.findOne({ tokenId: nftId });
-
-  if (!nft) {
-    return res.status(404).json({ message: "NFT not found" });
+  if (!nftId || !buyerWallet) {
+    return res.status(400).json({ message: "Invalid input" });
   }
 
+  const buyerId = await ensureUserExists(buyerWallet);
+
   try {
+    const nft = await NFT.findOne({ tokenId: nftId });
+    console.log(`NFT Found with tokenID ${nftId}:- `, nft);
+
+    if (!nft) {
+      return res.status(404).json({ message: "NFT not found" });
+    }
+
     const priceInEther = ethers.parseUnits(nft.price.toString(), "ether");
-    console.log(nft.price.toString(), priceInEther, nft);
+    console.log("Price In Ether:- ", priceInEther);
 
     const tx = await nftMarketplace.buyNFT(nft.tokenId - 1, {
       value: priceInEther,
@@ -179,7 +184,7 @@ exports.buyNFT = catchAsync(async (req, res) => {
     const receipt = await handleBlockchainTransaction(tx);
 
     await Transaction.create({
-      nftId: nft._id,
+      nftId: nft.tokenId,
       buyerId,
       sellerId: nft.sellerId,
       value: nft.price,

@@ -47,7 +47,7 @@ router.post("/nft", createNFT);
 router.put("/nft/:id", updateNFT);
 router.delete("/nft/:id", deleteNFT);
 router.post("/nft/list", listNFT);
-router.post("/nft/buy/", buyNFT);
+router.post("/nft/buy", buyNFT);
 router.post("/nft/verify/:id", verifyNFT);
 
 router.get("/transactions", getAllTransactions);
