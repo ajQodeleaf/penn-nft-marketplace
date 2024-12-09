@@ -57,37 +57,42 @@ const ListPage = () => {
 
       if (response.ok) {
         const data = await response.json();
-        const transactionHash = data.receipt.hash;
 
-        toast({
-          title: "Success",
-          description: (
-            <>
-              <span>NFT listed successfully!</span>
-              <br />
-              <a
-                href={`https://sepolia.etherscan.io/tx/${transactionHash}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ color: "orange", textDecoration: "underline" }}
-              >
-                View Transaction
-              </a>
-            </>
-          ),
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-        });
+        if (data.receipt && data.receipt.hash) {
+          const transactionHash = data.receipt.hash;
 
-        setFormData({
-          name: "",
-          description: "",
-          nftContract: "",
-          tokenId: "",
-          price: "",
-          metadataURI: "",
-        });
+          toast({
+            title: "Success",
+            description: (
+              <>
+                <span>NFT listed successfully!</span>
+                <br />
+                <a
+                  href={`https://sepolia.etherscan.io/tx/${transactionHash}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: "orange", textDecoration: "underline" }}
+                >
+                  View Transaction
+                </a>
+              </>
+            ),
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+          });
+
+          setFormData({
+            name: "",
+            description: "",
+            nftContract: "",
+            tokenId: "",
+            price: "",
+            metadataURI: "",
+          });
+        } else {
+          throw new Error("Transaction hash is missing.");
+        }
       } else {
         const errorData = await response.json();
         toast({
@@ -102,7 +107,8 @@ const ListPage = () => {
       console.error("Error:", error);
       toast({
         title: "Error",
-        description: "Something went wrong while listing the NFT.",
+        description:
+          error.message || "Something went wrong while listing the NFT.",
         status: "error",
         duration: 3000,
         isClosable: true,

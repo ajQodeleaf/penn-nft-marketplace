@@ -35,27 +35,32 @@ const BuyPage = () => {
 
       if (response.ok) {
         const data = await response.json();
-        const transactionHash = data.receipt.hash;
 
-        toast({
-          title: "Success",
-          description: (
-            <a
-              href={`https://sepolia.etherscan.io/tx/${transactionHash}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: "orange", textDecoration: "underline" }}
-            >
-              NFT Bought successfully! View transaction
-            </a>
-          ),
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-        });
+        if (data.receipt && data.receipt.hash) {
+          const transactionHash = data.receipt.hash;
 
-        setNftId("");
-        setBuyerWallet("");
+          toast({
+            title: "Success",
+            description: (
+              <a
+                href={`https://sepolia.etherscan.io/tx/${transactionHash}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "orange", textDecoration: "underline" }}
+              >
+                NFT Bought successfully! View transaction
+              </a>
+            ),
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+          });
+
+          setNftId("");
+          setBuyerWallet("");
+        } else {
+          throw new Error("Transaction hash is missing.");
+        }
       } else {
         const errorData = await response.json();
         toast({
@@ -70,7 +75,8 @@ const BuyPage = () => {
       console.error("Error:", error);
       toast({
         title: "Error",
-        description: "Something went wrong while buying the NFT.",
+        description:
+          error.message || "Something went wrong while buying the NFT.",
         status: "error",
         duration: 3000,
         isClosable: true,
