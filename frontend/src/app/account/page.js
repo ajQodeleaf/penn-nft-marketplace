@@ -35,7 +35,6 @@ const AccountsPage = () => {
         const response = await fetch(
           `${process.env.NEXT_BACKEND_URL}/transactions`
         );
-        console.log("Fetchh transactions Data:- ", data);
 
         if (response.ok) {
           const data = await response.json();
