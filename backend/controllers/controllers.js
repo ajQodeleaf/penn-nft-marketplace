@@ -166,7 +166,7 @@ exports.buyNFT = catchAsync(async (req, res) => {
   const buyerId = await ensureUserExists(buyerWallet);
 
   try {
-    const nft = await NFT.findOne({ tokenId: nftId });
+    const nft = await NFT.findOne({ tokenId: Number(nftId) });
     console.log(`NFT Found with tokenID ${nftId}:- `, nft);
 
     if (!nft) {
@@ -184,7 +184,7 @@ exports.buyNFT = catchAsync(async (req, res) => {
     const receipt = await handleBlockchainTransaction(tx);
 
     await Transaction.create({
-      nftId: nft.tokenId,
+      nftId: nft._id,
       buyerId,
       sellerId: nft.sellerId,
       value: nft.price,
