@@ -47,7 +47,7 @@ const ListPage = () => {
     };
 
     try {
-      const response = await fetch("https://penn-nft-marketplace.onrender.com/api/nft/list", {
+      const response = await fetch(`${process.env.NEXT_BACKEND_URL}/nft/list`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -57,6 +57,8 @@ const ListPage = () => {
 
       if (response.ok) {
         const data = await response.json();
+        console.log("NFT List Data:- ", data);
+
         const transactionHash = data.tx.hash;
         toast({
           title: "Success",

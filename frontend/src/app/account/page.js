@@ -32,10 +32,13 @@ const AccountsPage = () => {
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
-        const response = await fetch("https://penn-nft-marketplace.onrender.com/api/transactions");
-        const data = await response.json();
+        const response = await fetch(
+          `${process.env.NEXT_BACKEND_URL}/transactions`
+        );
+        console.log("Fetchh transactions Data:- ", data);
 
         if (response.ok) {
+          const data = await response.json();
           const ownedNFTs = data.transactions.map((tx) => ({
             id: tx.nft.id,
             name: tx.nft.name,
