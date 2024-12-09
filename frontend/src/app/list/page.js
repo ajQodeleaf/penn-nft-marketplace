@@ -46,6 +46,8 @@ const ListPage = () => {
       isVerified: true,
     };
 
+    console.log(`Backend/Fetch URL:- ${process.env.NEXT_BACKEND_URL}/nft/list`)
+
     try {
       const response = await fetch(`${process.env.NEXT_BACKEND_URL}/nft/list`, {
         method: "POST",

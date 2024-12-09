@@ -13,12 +13,13 @@ const startServer = async () => {
       console.log("Incoming Origin:", req.headers.origin);
       next();
     });
+    console.log("Frontend URL:- ", process.env.FRONTEND_URL);
 
     const allowedOrigins = [
       "http://localhost:3000",
-      "https://penn-nft-marketplace-aywl.vercel.app",
-      "https://penn-nft-marketplace-aywl-aradhya-jains-projects.vercel.app",
-      process.env.FRONTEND_URL,
+      "https://penn-nft-marketplace-aywl.vercel.app/api",
+      "https://penn-nft-marketplace-aywl-aradhya-jains-projects.vercel.app/api",
+      `${process.env.FRONTEND_URL}/api`,
     ];
 
     app.use(
