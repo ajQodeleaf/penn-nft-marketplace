@@ -46,19 +46,33 @@ const ListPage = () => {
       isVerified: true,
     };
 
-    console.log(`Backend/Fetch URL:- ${process.env.NEXT_BACKEND_URL}/nft/list`)
+    console.log(
+      "Backend/Fetch URL:",
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/nft/list`
+    );
 
     try {
-      const response = await fetch(`${process.env.NEXT_BACKEND_URL}/nft/list`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/nft/list`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Origin: window.location.origin,
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      console.log("Response Status:", response.status);
+      console.log("Response Headers:", response.headers);
+
+      const responseText = await response.text();
+      console.log("Response Text:", responseText);
 
       if (response.ok) {
-        const data = await response.json();
+        const data = responseText ? JSON.parse(responseText) : {};
+        console.log("Parsed Data:", data);
 
         if (data.receipt && data.receipt.hash) {
           const transactionHash = data.receipt.hash;
@@ -96,10 +110,9 @@ const ListPage = () => {
           throw new Error("Transaction hash is missing.");
         }
       } else {
-        const errorData = await response.json();
         toast({
           title: "Error",
-          description: errorData.message || "Failed to list NFT.",
+          description: responseText || "Failed to list NFT.",
           status: "error",
           duration: 3000,
           isClosable: true,
