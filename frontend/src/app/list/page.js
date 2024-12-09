@@ -47,7 +47,7 @@ const ListPage = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:5000/api/nft/list", {
+      const response = await fetch("https://penn-nft-marketplace.onrender.com/api/nft/list", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

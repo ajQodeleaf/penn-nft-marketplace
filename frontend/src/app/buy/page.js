@@ -25,7 +25,7 @@ const BuyPage = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:5000/api/nft/buy", {
+      const response = await fetch("https://penn-nft-marketplace.onrender.com/api/nft/buy", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
