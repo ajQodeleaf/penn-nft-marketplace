@@ -57,9 +57,8 @@ const ListPage = () => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log("NFT List Data:- ", data);
 
-        const transactionHash = data.tx.hash;
+        const transactionHash = data.receipt.hash;
         toast({
           title: "Success",
           description: (
