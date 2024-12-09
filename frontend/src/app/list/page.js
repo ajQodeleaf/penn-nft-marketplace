@@ -57,8 +57,8 @@ const ListPage = () => {
 
       if (response.ok) {
         const data = await response.json();
-
         const transactionHash = data.receipt.hash;
+
         toast({
           title: "Success",
           description: (
@@ -79,7 +79,7 @@ const ListPage = () => {
           duration: 3000,
           isClosable: true,
         });
-        console.log("Response Data:", data);
+
         setFormData({
           name: "",
           description: "",
