@@ -1,13 +1,17 @@
-const hre = require("hardhat");
-require("dotenv").config();
+import hardhat from "hardhat";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 async function main() {
   console.log("🚀 Deploying contract to Sepolia network... ⛓️");
 
-  await hre.run("compile");
+  await hardhat.run("compile");
   console.log("🛠️ Contract compiled successfully! ✅");
 
-  const NFTMarketplace = await hre.ethers.getContractFactory("NFTMarketplace");
+  const NFTMarketplace = await hardhat.ethers.getContractFactory(
+    "NFTMarketplace"
+  );
   const nftMarketplace = await NFTMarketplace.deploy();
 
   console.log(

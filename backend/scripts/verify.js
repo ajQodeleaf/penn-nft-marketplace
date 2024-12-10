@@ -1,5 +1,7 @@
-const hre = require("hardhat");
-require("dotenv").config();
+import hardhat from "hardhat";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 async function main() {
   const contractAddress = process.env.NFT_MARKETPLACE_CONTRACT_ADDRESS;
@@ -14,7 +16,7 @@ async function main() {
   console.log("🔍 Verifying contract at address:", contractAddress);
 
   try {
-    await hre.run("verify:verify", {
+    await hardhat.run("verify:verify", {
       address: contractAddress,
       constructorArguments: [],
     });
