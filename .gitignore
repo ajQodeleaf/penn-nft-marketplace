@@ -5,3 +5,5 @@ jsconfig.json
 next.config.mjs
 .env
 .next
+artifacts
+cache
