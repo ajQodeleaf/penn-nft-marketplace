@@ -38,24 +38,24 @@ const AccountsPage = () => {
 
         if (response.ok) {
           const data = await response.json();
-          const ownedNFTs = data.transactions.map((tx) => ({
-            id: tx.nft.id,
-            name: tx.nft.name,
-            description: tx.nft.description,
-            metadataURI: tx.nft.metadataURI,
-            price: tx.nft.price,
+
+          const ownedNFTs = data.map((tx) => ({
+            id: tx.nftId._id,
+            name: tx.nftId.name,
+            price: tx.nftId.price.$numberDecimal,
+            metadataURI: tx.nftId.metadataURI || "N/A",
           }));
 
-          const transactionHistory = data.transactions.map((tx) => ({
-            id: tx.id,
-            type: tx.value > 0 ? "Buy" : "Sell",
+          const transactionHistory = data.map((tx) => ({
+            id: tx._id,
+            type: tx.value.$numberDecimal > 0 ? "Buy" : "Sell",
             date: new Date(tx.createdAt).toLocaleDateString(),
-            amount: `${(parseFloat(tx.value) / 1e18).toFixed(2)} ETH`,
+            amount: `${parseFloat(tx.value.$numberDecimal).toFixed(3)} ETH`,
           }));
 
           setUserData((prev) => ({
             ...prev,
-            walletAddress: data.transactions[0]?.buyer.walletAddress || "N/A",
+            walletAddress: data[0]?.buyerId?.id || "N/A",
             ownedNFTs,
             transactionHistory,
           }));
