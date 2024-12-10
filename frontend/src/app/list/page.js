@@ -46,11 +46,6 @@ const ListPage = () => {
       isVerified: true,
     };
 
-    console.log(
-      "Backend/Fetch URL:",
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/nft/list`
-    );
-
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/nft/list`,
@@ -64,15 +59,10 @@ const ListPage = () => {
         }
       );
 
-      console.log("Response Status:", response.status);
-      console.log("Response Headers:", response.headers);
-
       const responseText = await response.text();
-      console.log("Response Text:", responseText);
 
       if (response.ok) {
         const data = responseText ? JSON.parse(responseText) : {};
-        console.log("Parsed Data:", data);
 
         if (data.receipt && data.receipt.hash) {
           const transactionHash = data.receipt.hash;
