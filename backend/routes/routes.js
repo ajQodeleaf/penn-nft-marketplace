@@ -1,4 +1,4 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
 const {
   getAllUsers,
@@ -63,4 +63,4 @@ router.post("/earnings/withdraw", withdrawEarnings);
 
 router.get("/rankings", getRankings);
 
-module.exports = router;
+export default router;

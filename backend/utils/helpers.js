@@ -1,5 +1,4 @@
-const { ethers } = require("ethers");
-const User = require("../models/user");
+import User from "../models/user.js";
 
 exports.catchAsync = (fn) => (req, res, next) => {
   fn(req, res, next).catch(next);
