@@ -1,6 +1,6 @@
 import express from "express";
 const router = express.Router();
-const {
+import {
   getAllUsers,
   getUser,
   getUserByWallet,
@@ -26,7 +26,7 @@ const {
   getEarnings,
   withdrawEarnings,
   getRankings,
-} = require("../controllers/controllers");
+} from "../controllers/controllers.js";
 
 router.get("/", (req, res) => {
   res.send("Welcome to the NFT Marketplace API");

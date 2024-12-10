@@ -1,10 +1,10 @@
 import User from "../models/user.js";
 
-exports.catchAsync = (fn) => (req, res, next) => {
+export const catchAsync = (fn) => (req, res, next) => {
   fn(req, res, next).catch(next);
 };
 
-exports.ensureUserExists = async (walletAddress) => {
+export const ensureUserExists = async (walletAddress) => {
   if (!walletAddress) {
     throw new Error("Wallet address is required");
   }
@@ -20,7 +20,7 @@ exports.ensureUserExists = async (walletAddress) => {
   return user._id;
 };
 
-exports.handleBlockchainTransaction = async (tx) => {
+export const handleBlockchainTransaction = async (tx) => {
   const receipt = await tx.wait();
   if (receipt.status !== 1) {
     throw new Error("Blockchain transaction failed.");
