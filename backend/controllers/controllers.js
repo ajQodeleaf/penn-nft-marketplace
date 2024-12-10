@@ -1,21 +1,21 @@
-const NFT = require("../models/nft");
-const User = require("../models/user");
-const Transaction = require("../models/transaction");
-const Collection = require("../models/collection");
-const { nftMarketplace, wallet } = require("../utils/contractInstance");
-const { ethers } = require("ethers");
-const {
+import NFT from "../models/nft.js";
+import User from "../models/user.js";
+import Transaction from "../models/transaction.js";
+import Collection from "../models/collection.js";
+import { nftMarketplace, wallet } from "../utils/contractInstance.js";
+import { ethers } from "ethers";
+import {
   catchAsync,
   ensureUserExists,
   handleBlockchainTransaction,
-} = require("../utils/helpers");
+} from "../utils/helpers.js";
 
-exports.getAllUsers = catchAsync(async (req, res) => {
+export const getAllUsers = catchAsync(async (req, res) => {
   const users = await User.find();
   res.status(200).json(users);
 });
 
-exports.getUser = catchAsync(async (req, res) => {
+export const getUser = catchAsync(async (req, res) => {
   const { id } = req.params;
   const user = await User.findById(id);
   if (user) {
@@ -25,7 +25,7 @@ exports.getUser = catchAsync(async (req, res) => {
   }
 });
 
-exports.getUserByWallet = catchAsync(async (req, res) => {
+export const getUserByWallet = catchAsync(async (req, res) => {
   const { walletAddress } = req.params;
 
   if (!walletAddress) {
@@ -40,7 +40,7 @@ exports.getUserByWallet = catchAsync(async (req, res) => {
   }
 });
 
-exports.createUser = catchAsync(async (req, res) => {
+export const createUser = catchAsync(async (req, res) => {
   const { walletAddress, name } = req.body;
 
   if (!walletAddress || !name) {
@@ -53,7 +53,7 @@ exports.createUser = catchAsync(async (req, res) => {
   res.status(201).json(newUser);
 });
 
-exports.updateUser = catchAsync(async (req, res) => {
+export const updateUser = catchAsync(async (req, res) => {
   const { id } = req.params;
   const { name } = req.body;
 
@@ -67,7 +67,7 @@ exports.updateUser = catchAsync(async (req, res) => {
   }
 });
 
-exports.createNFT = catchAsync(async (req, res) => {
+export const createNFT = catchAsync(async (req, res) => {
   const { nftContract, tokenId, price, metadataURI, description, isVerified } =
     req.body;
 
@@ -101,7 +101,7 @@ exports.createNFT = catchAsync(async (req, res) => {
   });
 });
 
-exports.listNFT = catchAsync(async (req, res) => {
+export const listNFT = catchAsync(async (req, res) => {
   const {
     nftContract,
     tokenId,
@@ -156,7 +156,7 @@ exports.listNFT = catchAsync(async (req, res) => {
   res.status(201).json({ message: "NFT listed successfully", nft, receipt });
 });
 
-exports.buyNFT = catchAsync(async (req, res) => {
+export const buyNFT = catchAsync(async (req, res) => {
   const { nftId, buyerWallet } = req.body;
 
   if (!nftId || !buyerWallet) {
@@ -205,7 +205,7 @@ exports.buyNFT = catchAsync(async (req, res) => {
   }
 });
 
-exports.updateNFT = catchAsync(async (req, res) => {
+export const updateNFT = catchAsync(async (req, res) => {
   const { id } = req.params;
   const { price, description } = req.body;
 
@@ -219,7 +219,7 @@ exports.updateNFT = catchAsync(async (req, res) => {
   res.status(200).json({ message: "NFT updated successfully", nft });
 });
 
-exports.deleteNFT = catchAsync(async (req, res) => {
+export const deleteNFT = catchAsync(async (req, res) => {
   const { id } = req.params;
   const nft = await NFT.findById(id);
 
@@ -232,7 +232,7 @@ exports.deleteNFT = catchAsync(async (req, res) => {
   res.status(200).json({ message: "NFT deleted successfully" });
 });
 
-exports.verifyNFT = catchAsync(async (req, res) => {
+export const verifyNFT = catchAsync(async (req, res) => {
   const { nftContract, tokenId } = req.params;
 
   const isVerified = await nftMarketplace.isVerifiedNFT(nftContract, tokenId);
@@ -252,12 +252,12 @@ exports.verifyNFT = catchAsync(async (req, res) => {
   });
 });
 
-exports.getAllNFTs = catchAsync(async (req, res) => {
+export const getAllNFTs = catchAsync(async (req, res) => {
   const nfts = await NFT.find({ isVerified: true }).populate("sellerId");
   res.status(200).json({ nfts });
 });
 
-exports.getNFTById = catchAsync(async (req, res) => {
+export const getNFTById = catchAsync(async (req, res) => {
   const { id } = req.params;
   const nft = await NFT.findById(id);
 
@@ -268,19 +268,19 @@ exports.getNFTById = catchAsync(async (req, res) => {
   res.status(200).json({ nft });
 });
 
-exports.getTransactionHistoryByNFTId = catchAsync(async (req, res) => {
+export const getTransactionHistoryByNFTId = catchAsync(async (req, res) => {
   const { nftId } = req.params;
 
   const transactions = await Transaction.find({ nftId });
   res.status(200).json({ transactions });
 });
 
-exports.getAllCollections = catchAsync(async (req, res) => {
+export const getAllCollections = catchAsync(async (req, res) => {
   const collections = await Collection.find({});
   res.status(200).json(collections);
 });
 
-exports.getCollectionByContract = catchAsync(async (req, res) => {
+export const getCollectionByContract = catchAsync(async (req, res) => {
   const { contractAddress } = req.params;
   const collectionDetails = await nftMarketplace.getCollectionDetails(
     contractAddress
@@ -303,7 +303,7 @@ exports.getCollectionByContract = catchAsync(async (req, res) => {
   }
 });
 
-exports.createCollection = catchAsync(async (req, res) => {
+export const createCollection = catchAsync(async (req, res) => {
   const { name, description, metadataURI, price, contractAddress, creatorId } =
     req.body;
 
@@ -334,7 +334,7 @@ exports.createCollection = catchAsync(async (req, res) => {
   res.status(201).json({ collection: newCollection, txReceipt });
 });
 
-exports.updateCollection = catchAsync(async (req, res) => {
+export const updateCollection = catchAsync(async (req, res) => {
   const { id } = req.params;
   const { name, description, metadataURI, price, isListed, isVerified } =
     req.body;
@@ -381,7 +381,7 @@ exports.updateCollection = catchAsync(async (req, res) => {
   res.status(200).json(collection);
 });
 
-exports.deleteCollection = catchAsync(async (req, res) => {
+export const deleteCollection = catchAsync(async (req, res) => {
   const { id } = req.params;
   const collection = await Collection.findById(id);
   if (!collection) {
@@ -396,7 +396,7 @@ exports.deleteCollection = catchAsync(async (req, res) => {
   res.status(200).json({ message: "Collection deleted successfully" });
 });
 
-exports.verifyCollection = catchAsync(async (req, res) => {
+export const verifyCollection = catchAsync(async (req, res) => {
   const { id } = req.params;
   const collection = await Collection.findById(id);
 
@@ -412,7 +412,7 @@ exports.verifyCollection = catchAsync(async (req, res) => {
   res.status(200).json({ message: "Collection verified successfully" });
 });
 
-exports.createTransaction = catchAsync(async (req, res) => {
+export const createTransaction = catchAsync(async (req, res) => {
   const { nftId, buyerId, sellerId, amount } = req.body;
 
   const buyer = await User.findById(buyerId);
@@ -435,7 +435,7 @@ exports.createTransaction = catchAsync(async (req, res) => {
     .json({ message: "Transaction created successfully", transaction });
 });
 
-exports.getAllTransactions = catchAsync(async (req, res) => {
+export const getAllTransactions = catchAsync(async (req, res) => {
   const transactions = await Transaction.find({})
     .populate("buyerId", "name email")
     .populate("sellerId", "name email")
@@ -443,7 +443,7 @@ exports.getAllTransactions = catchAsync(async (req, res) => {
   res.status(200).json({ transactions });
 });
 
-exports.getEarnings = catchAsync(async (req, res) => {
+export const getEarnings = catchAsync(async (req, res) => {
   const { userId } = req.params;
 
   const transactions = await Transaction.find({
@@ -459,7 +459,7 @@ exports.getEarnings = catchAsync(async (req, res) => {
   res.status(200).json({ earnings });
 });
 
-exports.withdrawEarnings = catchAsync(async (req, res) => {
+export const withdrawEarnings = catchAsync(async (req, res) => {
   const { sellerAddress } = req.body;
 
   if (!sellerAddress)
@@ -481,7 +481,7 @@ exports.withdrawEarnings = catchAsync(async (req, res) => {
   });
 });
 
-exports.getRankings = catchAsync(async (req, res) => {
+export const getRankings = catchAsync(async (req, res) => {
   const rankings = await Transaction.aggregate([
     {
       $match: { status: "Completed" },
