@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import mongooseSequence from "mongoose-sequence";
 
+const AutoIncrement = mongooseSequence(mongoose);
+
 const userSchema = new mongoose.Schema(
   {
     userId: {
@@ -24,7 +26,7 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-userSchema.plugin(mongooseSequence, { inc_field: "userId" });
+userSchema.plugin(AutoIncrement, { inc_field: "userId" });
 
 userSchema.virtual("nfts", {
   ref: "NFT",
@@ -43,4 +45,4 @@ userSchema.set("toObject", { virtuals: true });
 
 const User = mongoose.model("User", userSchema);
 
-module.exports = User;
+export default User;

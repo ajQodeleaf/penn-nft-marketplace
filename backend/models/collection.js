@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import mongooseSequence from "mongoose-sequence";
 
+const AutoIncrement = mongooseSequence(mongoose);
+
 const collectionSchema = new mongoose.Schema(
   {
     collectionId: {
@@ -53,11 +55,11 @@ const collectionSchema = new mongoose.Schema(
   }
 );
 
-collectionSchema.plugin(mongooseSequence, { inc_field: "collectionId" });
+collectionSchema.plugin(AutoIncrement, { inc_field: "collectionId" });
 
 collectionSchema.index({ creatorId: 1 });
 collectionSchema.index({ contractAddress: 1 }, { unique: true });
 
 const Collection = mongoose.model("Collection", collectionSchema);
 
-module.exports = Collection;
+export default Collection;

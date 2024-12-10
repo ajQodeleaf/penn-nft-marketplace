@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import mongooseSequence from "mongoose-sequence";
 
+const AutoIncrement = mongooseSequence(mongoose);
+
 const transactionSchema = new mongoose.Schema(
   {
     transactionId: {
@@ -36,7 +38,7 @@ const transactionSchema = new mongoose.Schema(
   }
 );
 
-transactionSchema.plugin(mongooseSequence, { inc_field: "transactionId" });
+transactionSchema.plugin(AutoIncrement, { inc_field: "transactionId" });
 
 transactionSchema.index({ buyerId: 1 });
 transactionSchema.index({ sellerId: 1 });
@@ -45,4 +47,4 @@ transactionSchema.index({ collectionId: 1 });
 
 const Transaction = mongoose.model("Transaction", transactionSchema);
 
-module.exports = Transaction;
+export default Transaction;
