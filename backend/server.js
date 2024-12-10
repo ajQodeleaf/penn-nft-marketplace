@@ -1,9 +1,11 @@
-const express = require("express");
-const cors = require("cors");
-const errorHandler = require("./middleware/errorHandler");
-const nftRoutes = require("./routes/routes");
-require("dotenv").config();
-require("./models/db");
+import express from "express";
+import cors from "cors";
+import errorHandler from "./middleware/errorHandler.js";
+import nftRoutes from "./routes/routes.js";
+import dotenv from "dotenv";
+import "./models/db.js";
+
+dotenv.config();
 
 const startServer = async () => {
   try {
