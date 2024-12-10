@@ -9,8 +9,10 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
+import { useConfig } from "../../context/ConfigContext";
 
 const BuyPage = () => {
+  const { backendUrl } = useConfig();
   const [nftId, setNftId] = useState("");
   const [buyerWallet, setBuyerWallet] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -25,10 +27,11 @@ const BuyPage = () => {
     };
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/nft/buy`, {
+      const response = await fetch(`${backendUrl}/nft/buy`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Origin: window.location.origin,
         },
         body: JSON.stringify(payload),
       });

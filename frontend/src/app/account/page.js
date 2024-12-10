@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import {
   Box,
@@ -15,6 +15,7 @@ import {
 import SectionHeader from "../../components/SectionHeader";
 import HorizontalList from "../../components/HorizontalList";
 import { useWallet } from "../../context/WalletContext";
+import { useConfig } from "../../context/ConfigContext";
 
 const AccountsPage = () => {
   const [userData, setUserData] = useState({
@@ -27,58 +28,83 @@ const AccountsPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const { account } = useWallet();
+  const { backendUrl } = useConfig();
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchTransactions = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/transactions`
-        );
+  const transformTransactions = useCallback(
+    (data) => {
+      const filteredTransactions = data.filter(
+        (tx) => tx.buyerId?.id === account || tx.sellerId?.id === account
+      );
 
-        if (response.ok) {
-          const data = await response.json();
-          console.log("Fetched transactions:", data);
+      const ownedNFTs = filteredTransactions.map((tx) => ({
+        id: tx.nftId?._id || "N/A",
+        name: tx.nftId?.name || "Unknown NFT",
+        price: tx.nftId?.price?.$numberDecimal || "0.0",
+        metadataURI: tx.nftId?.metadataURI || "N/A",
+      }));
+      console.log("Owned NFTs:- ", ownedNFTs);
 
-          const ownedNFTs = data.map((tx) => ({
-            id: tx.nftId?._id || "N/A",
-            name: tx.nftId?.name || "Unknown NFT",
-            price: tx.nftId?.price?.$numberDecimal || "0.0",
-            metadataURI: tx.nftId?.metadataURI || "N/A",
-          }));
-          console.log("Owned NFTs:- ", ownedNFTs);
+      const transactionsHistory = filteredTransactions.map((tx) => ({
+        id: tx._id || "N/A",
+        type: parseFloat(tx.value?.$numberDecimal || 0) > 0 ? "Buy" : "Sell",
+        date: tx.createdAt
+          ? new Date(tx.createdAt).toLocaleDateString()
+          : "N/A",
+        amount: `${parseFloat(tx.value?.$numberDecimal || 0).toFixed(3)} ETH`,
+      }));
+      console.log("Transactions History:- ", transactionsHistory);
 
-          const transactionHistory = data.map((tx) => ({
-            id: tx._id || "N/A",
-            type:
-              parseFloat(tx.value?.$numberDecimal || 0) > 0 ? "Buy" : "Sell",
-            date: tx.createdAt
-              ? new Date(tx.createdAt).toLocaleDateString()
-              : "N/A",
-            amount: `${parseFloat(tx.value?.$numberDecimal || 0).toFixed(
-              3
-            )} ETH`,
-          }));
-          console.log("Transaction History:- ", transactionHistory);
+      return { ownedNFTs, transactionsHistory };
+    },
+    [account]
+  );
 
-          setUserData((prev) => ({
-            ...prev,
-            walletAddress: data[0]?.buyerId?.id || "N/A",
-            ownedNFTs,
-            transactionHistory,
-          }));
-        } else {
-          throw new Error("Failed to fetch data");
-        }
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
+  const fetchUserData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const response = await fetch(`${backendUrl}/transactions`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch transactions.");
       }
-    };
 
-    fetchTransactions();
-  }, []);
+      const data = await response.json();
+      console.log("Fetched transactions:", data);
+
+      const { ownedNFTs, transactionsHistory } = transformTransactions(data);
+
+      setUserData((prev) => ({
+        ...prev,
+        walletAddress: account || "N/A",
+        ownedNFTs,
+        transactionsHistory,
+      }));
+    } catch (err) {
+      console.error(err);
+      setError(err.message || "An unexpected error occurred.");
+    } finally {
+      setLoading(false);
+    }
+  }, [backendUrl, account, transformTransactions]);
+
+  useEffect(() => {
+    if (account) {
+      fetchUserData();
+    } else {
+      setError("Wallet not connected.");
+      setLoading(false);
+    }
+  }, [account, fetchUserData]);
+
+  const handleSeeAllClick = (section, data) => {
+    router.push(
+      `/see-all?section=${encodeURIComponent(
+        section
+      )}&data=${encodeURIComponent(JSON.stringify(data))}`
+    );
+  };
 
   if (loading) {
     return (
@@ -97,14 +123,6 @@ const AccountsPage = () => {
     );
   }
 
-  const handleSeeAllClick = (section, data) => {
-    router.push(
-      `/see-all?section=${encodeURIComponent(
-        section
-      )}&data=${encodeURIComponent(JSON.stringify(data))}`
-    );
-  };
-
   return (
     <Box bg="#FAFAFA" pb="82px" pt="28px" px="20px">
       <Box
@@ -117,10 +135,10 @@ const AccountsPage = () => {
       >
         <Avatar name="Cardinal Navigator" size="xl" bg="#19976A" />
         <Text fontSize="sm" fontWeight="medium">
-          cardinal.navi@gmail.com
+          {userData.email || "cardinal.navi@gmail.com"}
         </Text>
         <Text fontSize="sm" color="gray.500">
-          {account?.toString() || "N/A"}
+          {userData.walletAddress}
         </Text>
       </Box>
 

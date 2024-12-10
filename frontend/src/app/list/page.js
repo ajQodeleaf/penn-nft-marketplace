@@ -11,8 +11,10 @@ import {
   VStack,
   useToast,
 } from "@chakra-ui/react";
+import { useConfig } from "../../context/ConfigContext";
 
 const ListPage = () => {
+  const { backendUrl } = useConfig();
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -34,6 +36,24 @@ const ListPage = () => {
   };
 
   const handleSubmit = async () => {
+    if (
+      !formData.name ||
+      !formData.description ||
+      !formData.nftContract ||
+      !formData.tokenId ||
+      !formData.price ||
+      !formData.metadataURI
+    ) {
+      toast({
+        title: "Error",
+        description: "Please fill in all required fields.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
     const payload = {
@@ -47,17 +67,14 @@ const ListPage = () => {
     };
 
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/nft/list`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Origin: window.location.origin,
-          },
-          body: JSON.stringify(payload),
-        }
-      );
+      const response = await fetch(`${backendUrl}/nft/list`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Origin: window.location.origin,
+        },
+        body: JSON.stringify(payload),
+      });
 
       const responseText = await response.text();
 
@@ -68,10 +85,10 @@ const ListPage = () => {
           const transactionHash = data.receipt.hash;
 
           toast({
-            title: "Success",
+            title: "NFT Listed Successfully",
             description: (
               <>
-                <span>NFT listed successfully!</span>
+                <span>Your NFT has been listed!</span>
                 <br />
                 <a
                   href={`https://sepolia.etherscan.io/tx/${transactionHash}`}
@@ -84,7 +101,7 @@ const ListPage = () => {
               </>
             ),
             status: "success",
-            duration: 3000,
+            duration: 4000,
             isClosable: true,
           });
 
@@ -97,9 +114,10 @@ const ListPage = () => {
             metadataURI: "",
           });
         } else {
-          throw new Error("Transaction hash is missing.");
+          throw new Error("Transaction hash is missing from the response.");
         }
       } else {
+        console.error("Failed to list NFT:", responseText);
         toast({
           title: "Error",
           description: responseText || "Failed to list NFT.",
@@ -109,11 +127,11 @@ const ListPage = () => {
         });
       }
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error occurred while listing NFT:", error);
       toast({
         title: "Error",
         description:
-          error.message || "Something went wrong while listing the NFT.",
+          error.message || "An unexpected error occurred. Please try again.",
         status: "error",
         duration: 3000,
         isClosable: true,
