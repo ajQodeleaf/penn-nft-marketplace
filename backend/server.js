@@ -34,24 +34,7 @@ const startServer = async () => {
       })
     );
 
-    app.options("*", (req, res) => {
-      res.header(
-        "Access-Control-Allow-Origin",
-        allowedOrigins.includes(req.headers.origin)
-          ? req.headers.origin
-          : allowedOrigins[0]
-      );
-      res.header(
-        "Access-Control-Allow-Methods",
-        "GET, POST, PUT, DELETE, OPTIONS"
-      );
-      res.header(
-        "Access-Control-Allow-Headers",
-        "Content-Type, Authorization, Origin, Accept"
-      );
-      res.header("Access-Control-Allow-Credentials", "true");
-      res.sendStatus(200);
-    });
+    app.options("*", cors());
 
     app.use(express.json());
 
