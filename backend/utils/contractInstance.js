@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import dotenv from "dotenv";
-import { NFT_MARKETPLACE_ABI } from "./utils/constants.js";
+import { NFT_MARKETPLACE_ABI } from "../utils/constants.js";
 
 dotenv.config();
 
