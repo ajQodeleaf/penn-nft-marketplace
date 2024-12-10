@@ -33,7 +33,7 @@ const AccountsPage = () => {
     const fetchTransactions = async () => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_BACKEND_URL}/transactions`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/transactions`
         );
 
         if (response.ok) {

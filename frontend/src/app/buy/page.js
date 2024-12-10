@@ -25,7 +25,7 @@ const BuyPage = () => {
     };
 
     try {
-      const response = await fetch(`${process.env.NEXT_BACKEND_URL}/nft/buy`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/nft/buy`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
