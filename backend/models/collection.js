@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const mongooseSequence = require("mongoose-sequence")(mongoose);
+import mongoose from "mongoose";
+import mongooseSequence from "mongoose-sequence";
 
 const collectionSchema = new mongoose.Schema(
   {
