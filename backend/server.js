@@ -9,16 +9,14 @@ const startServer = async () => {
   try {
     const app = express();
 
+    const allowedOrigins = ["http://localhost:3000", process.env.FRONTEND_URL];
+
     app.use((req, res, next) => {
       console.log("Incoming Origin:", req.headers.origin);
       console.log("Request URL:", req.url);
       console.log("Request Method:", req.method);
       next();
     });
-
-    console.log("Frontend URL:", process.env.FRONTEND_URL);
-
-    const allowedOrigins = ["http://localhost:3000", process.env.FRONTEND_URL];
 
     app.use(
       cors({
@@ -37,7 +35,12 @@ const startServer = async () => {
     );
 
     app.options("*", (req, res) => {
-      res.header("Access-Control-Allow-Origin", req.headers.origin || "*");
+      res.header(
+        "Access-Control-Allow-Origin",
+        allowedOrigins.includes(req.headers.origin)
+          ? req.headers.origin
+          : allowedOrigins[0]
+      );
       res.header(
         "Access-Control-Allow-Methods",
         "GET, POST, PUT, DELETE, OPTIONS"
@@ -46,6 +49,7 @@ const startServer = async () => {
         "Access-Control-Allow-Headers",
         "Content-Type, Authorization, Origin, Accept"
       );
+      res.header("Access-Control-Allow-Credentials", "true");
       res.sendStatus(200);
     });
 
