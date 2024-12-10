@@ -38,20 +38,28 @@ const AccountsPage = () => {
 
         if (response.ok) {
           const data = await response.json();
+          console.log("Fetched transactions:", data);
 
           const ownedNFTs = data.map((tx) => ({
-            id: tx.nftId._id,
-            name: tx.nftId.name,
-            price: tx.nftId.price.$numberDecimal,
-            metadataURI: tx.nftId.metadataURI || "N/A",
+            id: tx.nftId?._id || "N/A",
+            name: tx.nftId?.name || "Unknown NFT",
+            price: tx.nftId?.price?.$numberDecimal || "0.0",
+            metadataURI: tx.nftId?.metadataURI || "N/A",
           }));
+          console.log("Owned NFTs:- ", ownedNFTs);
 
           const transactionHistory = data.map((tx) => ({
-            id: tx._id,
-            type: tx.value.$numberDecimal > 0 ? "Buy" : "Sell",
-            date: new Date(tx.createdAt).toLocaleDateString(),
-            amount: `${parseFloat(tx.value.$numberDecimal).toFixed(3)} ETH`,
+            id: tx._id || "N/A",
+            type:
+              parseFloat(tx.value?.$numberDecimal || 0) > 0 ? "Buy" : "Sell",
+            date: tx.createdAt
+              ? new Date(tx.createdAt).toLocaleDateString()
+              : "N/A",
+            amount: `${parseFloat(tx.value?.$numberDecimal || 0).toFixed(
+              3
+            )} ETH`,
           }));
+          console.log("Transaction History:- ", transactionHistory);
 
           setUserData((prev) => ({
             ...prev,
@@ -107,14 +115,12 @@ const AccountsPage = () => {
         alignItems="center"
         gap={2}
       >
-        <Avatar name={"Cardinal Navigator"} size="xl" bg="#19976A"></Avatar>
-
+        <Avatar name="Cardinal Navigator" size="xl" bg="#19976A" />
         <Text fontSize="sm" fontWeight="medium">
-          {"cardinal.navi@gmail.com"}
+          cardinal.navi@gmail.com
         </Text>
-
         <Text fontSize="sm" color="gray.500">
-          {account.toString()}
+          {account?.toString() || "N/A"}
         </Text>
       </Box>
 
