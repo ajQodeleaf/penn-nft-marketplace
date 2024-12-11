@@ -75,7 +75,7 @@ const AccountsPage = () => {
             name: nft.name || "Unknown NFT",
             price: `${parseFloat(nft.price?.$numberDecimal || 0).toFixed(
               3
-            )} ETH`,
+            )}`,
             metadataURI: nft.metadataURI || "N/A",
             tokenId: nft.tokenId || "N/A",
             description: nft.description || "No description available",
