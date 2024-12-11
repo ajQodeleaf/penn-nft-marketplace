@@ -180,6 +180,7 @@ The table below maps each method to its respective database operations:
 
 - Ensure proper validations and checks before modifying any database entries.
 - All updates to the `Transactions` table should be logged through `createTransaction` or similar methods.
-- This project uses **PostgreSQL** for database management and interacts with smart contracts for blockchain-related functionalities.
+- This project uses **MongoDB** for database management and interacts with smart contracts for blockchain-related functionalities.
+- Ensure to set the NODE_ENV for working whether in `production` or `development` environment, as it defines how to handle cross origin requests and easy development.
 
 ---
