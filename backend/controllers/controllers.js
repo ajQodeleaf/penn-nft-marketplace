@@ -437,9 +437,9 @@ export const createTransaction = catchAsync(async (req, res) => {
 
 export const getAllTransactions = catchAsync(async (req, res) => {
   const transactions = await Transaction.find({})
-    .populate("buyerId", "name email")
-    .populate("sellerId", "name email")
-    .populate("nftId", "name price");
+    .populate("buyerId", "name email userId")
+    .populate("sellerId", "name email userId")
+    .populate("nftId", "name price metadataURI tokenId description");
   res.status(200).json({ transactions });
 });
 
