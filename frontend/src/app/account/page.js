@@ -32,32 +32,69 @@ const AccountsPage = () => {
   const router = useRouter();
 
   const transformTransactions = useCallback(
-    (data) => {
-      const filteredTransactions = data.filter(
-        (tx) => tx.buyerId?.id === account || tx.sellerId?.id === account
-      );
+    async (data, users) => {
+      const user = users.find((user) => user.walletAddress === account);
+      if (!user) {
+        console.error("User not found with the given wallet address");
+        return { ownedNFTs: [], transactionsHistory: [] };
+      }
 
-      const ownedNFTs = filteredTransactions.map((tx) => ({
-        id: tx.nftId?._id || "N/A",
-        name: tx.nftId?.name || "Unknown NFT",
-        price: tx.nftId?.price?.$numberDecimal || "0.0",
-        metadataURI: tx.nftId?.metadataURI || "N/A",
-      }));
-      console.log("Owned NFTs:- ", ownedNFTs);
+      const ownedNFTs = [];
+      const transactionsHistory = [];
 
-      const transactionsHistory = filteredTransactions.map((tx) => ({
-        id: tx._id || "N/A",
-        type: parseFloat(tx.value?.$numberDecimal || 0) > 0 ? "Buy" : "Sell",
-        date: tx.createdAt
-          ? new Date(tx.createdAt).toLocaleDateString()
-          : "N/A",
-        amount: `${parseFloat(tx.value?.$numberDecimal || 0).toFixed(3)} ETH`,
-      }));
-      console.log("Transactions History:- ", transactionsHistory);
+      for (let tx of data) {
+        const isBuyer = tx.buyerId?.id === user._id;
+        const isSeller = tx.sellerId?.id === user._id;
+
+        const transactionType =
+          isBuyer && isSeller
+            ? "Self-Transaction"
+            : isBuyer
+            ? "Buy"
+            : isSeller
+            ? "Sell"
+            : "Unknown";
+
+        let nft = tx.nftId || {};
+
+        if (!nft.metadataURI) {
+          try {
+            const nftResponse = await fetch(`${backendUrl}/nfts/${nft._id}`);
+            if (nftResponse.ok) {
+              const nftData = await nftResponse.json();
+              nft = nftData;
+            }
+          } catch (err) {
+            console.error("Failed to fetch NFT data:", err);
+          }
+        }
+
+        if (isBuyer) {
+          ownedNFTs.push({
+            id: nft._id || "N/A",
+            name: nft.name || "Unknown NFT",
+            price: `${parseFloat(nft.price?.$numberDecimal || 0).toFixed(
+              3
+            )} ETH`,
+            metadataURI: nft.metadataURI || "N/A",
+            tokenId: nft.tokenId || "N/A",
+            description: nft.description || "No description available",
+          });
+        }
+
+        transactionsHistory.push({
+          id: tx._id || "N/A",
+          type: transactionType,
+          date: tx.createdAt
+            ? new Date(tx.createdAt).toLocaleDateString()
+            : "N/A",
+          amount: `${parseFloat(tx.value?.$numberDecimal || 0).toFixed(3)} ETH`,
+        });
+      }
 
       return { ownedNFTs, transactionsHistory };
     },
-    [account]
+    [account, backendUrl]
   );
 
   const fetchUserData = useCallback(async () => {
@@ -65,15 +102,45 @@ const AccountsPage = () => {
       setLoading(true);
       setError("");
 
-      const response = await fetch(`${backendUrl}/transactions`);
+      const usersResponse = await fetch(`${backendUrl}/users`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Origin: window.location.origin,
+        },
+      });
+
+      if (!usersResponse.ok) {
+        throw new Error("Failed to fetch users.");
+      }
+
+      const users = await usersResponse.json();
+
+      const response = await fetch(`${backendUrl}/transactions`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Origin: window.location.origin,
+        },
+      });
+
       if (!response.ok) {
         throw new Error("Failed to fetch transactions.");
       }
 
       const data = await response.json();
-      console.log("Fetched transactions:", data);
+      console.log("Data:- ", data);
 
-      const { ownedNFTs, transactionsHistory } = transformTransactions(data);
+      const { ownedNFTs, transactionsHistory } = await transformTransactions(
+        data.transactions,
+        users
+      );
+      console.log(
+        "Owned NFTs:- ",
+        ownedNFTs,
+        "Transactions History:- ",
+        transactionsHistory
+      );
 
       setUserData((prev) => ({
         ...prev,
