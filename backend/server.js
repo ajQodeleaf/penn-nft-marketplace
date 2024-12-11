@@ -1,8 +1,8 @@
 import express from "express";
 import cors from "cors";
-import errorHandler from "./middleware/errorHandler.js";
-import nftRoutes from "./routes/routes.js";
 import dotenv from "dotenv";
+import nftRoutes from "./routes/routes.js";
+import errorHandler from "./middleware/errorHandler.js";
 import "./models/db.js";
 
 dotenv.config();
@@ -16,12 +16,12 @@ const startServer = async () => {
         ? [process.env.PRODUCTION_FRONTEND_URL]
         : [process.env.DEVELOPMENT_FRONTEND_URL];
 
-    if (process.env.NODE_ENV !== "production") {
+    if (process.env.NODE_ENV === "development") {
       console.log("🌐 Allowed Origins:", allowedOrigins);
     }
 
     app.use((req, res, next) => {
-      if (process.env.NODE_ENV !== "production") {
+      if (process.env.NODE_ENV === "development") {
         console.log("🚀 Incoming Origin:", req.headers.origin);
         console.log("📄 Request URL:", req.url);
         console.log("⚙️ Request Method:", req.method);
