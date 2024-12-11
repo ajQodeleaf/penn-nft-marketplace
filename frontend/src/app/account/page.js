@@ -73,9 +73,7 @@ const AccountsPage = () => {
           ownedNFTs.push({
             id: nft._id || "N/A",
             name: nft.name || "Unknown NFT",
-            price: `${parseFloat(nft.price?.$numberDecimal || 0).toFixed(
-              3
-            )}`,
+            price: `${parseFloat(nft.price?.$numberDecimal || 0).toFixed(3)}`,
             metadataURI: nft.metadataURI || "N/A",
             tokenId: nft.tokenId || "N/A",
             description: nft.description || "No description available",
@@ -129,17 +127,10 @@ const AccountsPage = () => {
       }
 
       const data = await response.json();
-      console.log("Data:- ", data);
 
       const { ownedNFTs, transactionsHistory } = await transformTransactions(
         data.transactions,
         users
-      );
-      console.log(
-        "Owned NFTs:- ",
-        ownedNFTs,
-        "Transactions History:- ",
-        transactionsHistory
       );
 
       setUserData((prev) => ({
@@ -234,20 +225,24 @@ const AccountsPage = () => {
       <Box mt="20px" mb="4px">
         <SectionHeader sectionHeaderTitle="Transaction History" />
         <VStack align="stretch" spacing={4}>
-          {userData.transactionHistory.map((transaction) => (
-            <Flex
-              key={transaction.id}
-              justify="space-between"
-              p={4}
-              borderWidth="1px"
-              borderRadius="lg"
-              boxShadow="sm"
-            >
-              <Text fontWeight="bold">{transaction.type}</Text>
-              <Text>{transaction.date}</Text>
-              <Text color="green.500">{transaction.amount}</Text>
-            </Flex>
-          ))}
+          {userData.transactionsHistory.length > 0 ? (
+            userData.transactionsHistory.map((transaction) => (
+              <Flex
+                key={transaction.id}
+                justify="space-between"
+                p={4}
+                borderWidth="1px"
+                borderRadius="lg"
+                boxShadow="sm"
+              >
+                <Text fontWeight="bold">{transaction.type}</Text>
+                <Text>{transaction.date}</Text>
+                <Text color="green.500">{transaction.amount}</Text>
+              </Flex>
+            ))
+          ) : (
+            <Text>No transactions available.</Text>
+          )}
         </VStack>
       </Box>
     </Box>
