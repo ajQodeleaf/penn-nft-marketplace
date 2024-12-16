@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "lint": "eslint \"*.js\" \"src/**/*.js\"",
+    "lint:sol": "solhint \"contracts/**/*.sol\""
   },
   "keywords": [],
   "author": "",
@@ -16,6 +18,7 @@
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
     "@openzeppelin/contracts": "^5.1.0",
     "@openzeppelin/contracts-upgradeable": "^5.1.0",
+    "antlr4": "^4.13.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "ethers": "^6.13.4",
@@ -23,9 +26,12 @@
     "hardhat": "^2.22.15",
     "mongoose": "^8.8.4",
     "mongoose-sequence": "^6.0.1",
-    "node-cache": "^5.1.2"
+    "node-cache": "^5.1.2",
+    "solc": "^0.8.28"
   },
   "devDependencies": {
-    "nodemon": "^3.1.7"
+    "eslint": "^9.17.0",
+    "nodemon": "^3.1.7",
+    "solhint": "^5.0.3"
   }
 }
