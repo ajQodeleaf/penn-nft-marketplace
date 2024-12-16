@@ -58,7 +58,7 @@ npm run start
 | Step                   | Command                                                          |
 | ---------------------- | ---------------------------------------------------------------- |
 | Install dependencies   | `npm i`                                                          |
-| Deploy contract        | `npx hardhat run scripts/deploy.js --network <network-name>`      |
+| Deploy contract        | `npx hardhat run src/scripts/deploy.js --network <network-name>`      |
 | Verify contract (cli)  | `npx hardhat verify --network <network-name> <contract-address>` |
 | Verify contract (code) | `npx hardhat run scripts/verify.js --network <network-name>`     |
 | Start server           | `npm run start`                                                  |
