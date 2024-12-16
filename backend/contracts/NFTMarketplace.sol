@@ -3,6 +3,14 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
+error NotOwner(address nftContract, uint256 tokenId);
+error PriceTooLow(uint256 minPrice);
+error NFTNotListed();
+error NotApproved(address nftContract, uint256 tokenId);
+error InsufficientFunds(uint256 price);
+error CollectionNotFound(uint256 collectionId);
+error AlreadyVerified();
+
 contract NFTMarketplace {
     struct Listing {
         address seller;
@@ -109,20 +117,23 @@ contract NFTMarketplace {
         uint256 tokenId,
         address sender
     ) {
-        require(
-            IERC721(nftContract).ownerOf(tokenId) == sender,
-            "You are not the owner of this NFT"
-        );
+        if (IERC721(nftContract).ownerOf(tokenId) != sender) {
+            revert NotOwner(nftContract, tokenId);
+        }
         _;
     }
 
     modifier isListed(uint256 listingId) {
-        require(listings[listingId].price > 0, "This NFT is not listed");
+        if (listings[listingId].price == 0) {
+            revert NFTNotListed();
+        }
         _;
     }
 
     modifier onlyAdmin() {
-        require(msg.sender == admin, "Only admin can perform this action");
+        if (msg.sender != admin) {
+            revert NotOwner(admin, 0);
+        }
         _;
     }
 
@@ -136,7 +147,9 @@ contract NFTMarketplace {
         string calldata metadataURI,
         uint256 price
     ) external onlyAdmin {
-        require(price >= MIN_COLLECTION_LISTING_PRICE, "Price too low");
+        if (price < MIN_COLLECTION_LISTING_PRICE) {
+            revert PriceTooLow(MIN_COLLECTION_LISTING_PRICE);
+        }
 
         collections[collectionCounter] = Collection(
             msg.sender,
@@ -169,14 +182,13 @@ contract NFTMarketplace {
         string calldata description,
         bool isVerified
     ) external isOwner(nftContract, tokenId, msg.sender) {
-        require(
-            price >= MIN_LISTING_PRICE,
-            "Price must be at least 0.000001 ETH"
-        );
-        require(
-            IERC721(nftContract).getApproved(tokenId) == address(this),
-            "NFT must be approved for transfer to the marketplace"
-        );
+        if (price < MIN_LISTING_PRICE) {
+            revert PriceTooLow(MIN_LISTING_PRICE);
+        }
+
+        if (IERC721(nftContract).getApproved(tokenId) != address(this)) {
+            revert NotApproved(nftContract, tokenId);
+        }
 
         IERC721(nftContract).transferFrom(msg.sender, address(this), tokenId);
 
@@ -205,32 +217,6 @@ contract NFTMarketplace {
         listingCounter++;
     }
 
-    function getCollection(
-        uint256 collectionId
-    ) external view returns (Collection memory) {
-        require(
-            bytes(collections[collectionId].name).length > 0,
-            "Collection does not exist"
-        );
-        return collections[collectionId];
-    }
-
-    function getListing(
-        uint256 listingId
-    ) external view returns (Listing memory) {
-        return listings[listingId];
-    }
-
-    function getSellerEarnings(address seller) external view returns (uint256) {
-        return sellerEarnings[seller];
-    }
-
-    function getUserPurchases(
-        address user
-    ) external view returns (uint256[] memory) {
-        return userPurchases[user];
-    }
-
     function updateCollection(
         uint256 collectionId,
         string calldata name,
@@ -239,8 +225,13 @@ contract NFTMarketplace {
         uint256 price
     ) external onlyAdmin {
         Collection storage collection = collections[collectionId];
-        require(bytes(collection.name).length > 0, "Collection does not exist");
-        require(price >= MIN_COLLECTION_LISTING_PRICE, "Price too low");
+        if (bytes(collection.name).length == 0) {
+            revert CollectionNotFound(collectionId);
+        }
+
+        if (price < MIN_COLLECTION_LISTING_PRICE) {
+            revert PriceTooLow(MIN_COLLECTION_LISTING_PRICE);
+        }
 
         collection.name = name;
         collection.description = description;
@@ -264,14 +255,13 @@ contract NFTMarketplace {
         string calldata description
     ) external isListed(listingId) {
         Listing storage listing = listings[listingId];
-        require(
-            listing.seller == msg.sender,
-            "Only the seller can update the listing"
-        );
-        require(
-            price >= MIN_LISTING_PRICE,
-            "Price must be at least 0.000001 ETH"
-        );
+        if (listing.seller != msg.sender) {
+            revert NotOwner(listing.seller, listing.tokenId);
+        }
+
+        if (price < MIN_LISTING_PRICE) {
+            revert PriceTooLow(MIN_LISTING_PRICE);
+        }
 
         listing.price = price;
         listing.name = name;
@@ -291,20 +281,18 @@ contract NFTMarketplace {
     }
 
     function deleteCollection(uint256 collectionId) external onlyAdmin {
-        require(
-            bytes(collections[collectionId].name).length > 0,
-            "Collection does not exist"
-        );
+        if (bytes(collections[collectionId].name).length == 0) {
+            revert CollectionNotFound(collectionId);
+        }
         delete collections[collectionId];
         emit CollectionDeleted(collectionId);
     }
 
     function buyNFT(uint256 listingId) external payable isListed(listingId) {
         Listing memory listing = listings[listingId];
-        require(
-            msg.value >= listing.price,
-            "Insufficient funds to buy this NFT"
-        );
+        if (msg.value < listing.price) {
+            revert InsufficientFunds(listing.price);
+        }
 
         IERC721(listing.nftContract).transferFrom(
             address(this),
@@ -328,7 +316,9 @@ contract NFTMarketplace {
 
     function withdrawEarnings() external {
         uint256 earnings = sellerEarnings[msg.sender];
-        require(earnings > 0, "You have no earnings to withdraw");
+        if (earnings == 0) {
+            revert InsufficientFunds(0);
+        }
 
         sellerEarnings[msg.sender] = 0;
         payable(msg.sender).transfer(earnings);
@@ -338,8 +328,13 @@ contract NFTMarketplace {
 
     function verifyNFT(uint256 listingId) external onlyAdmin {
         Listing storage listing = listings[listingId];
-        require(listing.price > 0, "This NFT is not listed");
-        require(!listing.isVerified, "NFT is already verified");
+        if (listing.price == 0) {
+            revert NFTNotListed();
+        }
+
+        if (listing.isVerified) {
+            revert AlreadyVerified();
+        }
 
         listing.isVerified = true;
 
@@ -348,8 +343,13 @@ contract NFTMarketplace {
 
     function verifyCollection(uint256 collectionId) external onlyAdmin {
         Collection storage collection = collections[collectionId];
-        require(bytes(collection.name).length > 0, "Collection does not exist");
-        require(!collection.isVerified, "Collection is already verified");
+        if (bytes(collection.name).length == 0) {
+            revert CollectionNotFound(collectionId);
+        }
+
+        if (collection.isVerified) {
+            revert AlreadyVerified();
+        }
 
         collection.isVerified = true;
 
@@ -360,31 +360,74 @@ contract NFTMarketplace {
         return admin;
     }
 
-    function updateTradingVolume(address nftContract, uint256 price) private {
-        CollectionStats storage stats = collectionStats[nftContract];
-        stats.previousVolume = stats.tradingVolume;
-        stats.tradingVolume += price;
-        stats.lastUpdated = block.timestamp;
+    function getRankings() external view returns (address[] memory) {
+        address[] memory topCollections = new address[](5);
+        uint256[] memory volumes = new uint256[](5);
+        uint256 i = 0;
+
+        for (uint256 j = 0; j < collectionCounter; j++) {
+            address collectionAddress = collections[j].owner;
+            uint256 collectionVolume = collectionStats[collectionAddress]
+                .tradingVolume;
+
+            if (i < 5) {
+                topCollections[i] = collectionAddress;
+                volumes[i] = collectionVolume;
+                i++;
+            } else {
+                for (uint256 k = 0; k < 5; k++) {
+                    if (volumes[k] < collectionVolume) {
+                        volumes[k] = collectionVolume;
+                        topCollections[k] = collectionAddress;
+                        break;
+                    }
+                }
+            }
+        }
+        return topCollections;
     }
 
     function getCollectionStats(
-        address nftContract
+        uint256 collectionId
     ) external view returns (CollectionStats memory) {
-        return collectionStats[nftContract];
-    }
+        address collectionOwner = collections[collectionId].owner;
 
-    function getRankings() external view returns (address[] memory) {
-        uint256 length = collectionCounter;
-        address[] memory rankedCollections = new address[](length);
-        uint256 index = 0;
-
-        for (uint256 i = 0; i < length; i++) {
-            if (collections[i].isVerified) {
-                rankedCollections[index] = collections[i].owner;
-                index++;
-            }
+        if (bytes(collections[collectionId].name).length == 0) {
+            revert CollectionNotFound(collectionId);
         }
 
-        return rankedCollections;
+        return collectionStats[collectionOwner];
+    }
+
+    function getCollection(
+        uint256 collectionId
+    ) external view returns (Collection memory) {
+        if (bytes(collections[collectionId].name).length == 0) {
+            revert CollectionNotFound(collectionId);
+        }
+        return collections[collectionId];
+    }
+
+    function getListing(
+        uint256 listingId
+    ) external view returns (Listing memory) {
+        return listings[listingId];
+    }
+
+    function getSellerEarnings(address seller) external view returns (uint256) {
+        return sellerEarnings[seller];
+    }
+
+    function getUserPurchases(
+        address user
+    ) external view returns (uint256[] memory) {
+        return userPurchases[user];
+    }
+
+    function updateTradingVolume(address nftContract, uint256 volume) private {
+        CollectionStats storage stats = collectionStats[nftContract];
+        stats.previousVolume = stats.tradingVolume;
+        stats.tradingVolume += volume;
+        stats.lastUpdated = block.timestamp;
     }
 }
