@@ -5,5 +5,5 @@ jsconfig.json
 next.config.mjs
 .env
 .next
-artifacts
-cache
+/backend/artifacts/
+/backend/cache/
