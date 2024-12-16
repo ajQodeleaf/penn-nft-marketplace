@@ -1,0 +1,18 @@
+{
+  "extends": ["solhint:recommended"],
+  "rules": {
+    "no-global-import": "off",
+    "max-line-length": ["warn", 120],
+    "func-visibility": [
+      "warn",
+      {
+        "ignoreConstructors": true
+      }
+    ],
+    "ordering": "warn",
+    "no-empty-blocks": "warn",
+    "avoid-low-level-calls": "warn",
+    "no-inline-assembly": "warn",
+    "quotes": ["error", "double"]
+  }
+}
