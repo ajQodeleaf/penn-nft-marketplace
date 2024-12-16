@@ -31,7 +31,7 @@ jobs:
         env:
           PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
           INFURA_API_KEY: ${{ secrets.INFURA_SEPOLIA_API_KEY }}
-        run: cd backend && npx hardhat run scripts/deploy.js --network sepolia
+        run: cd backend && npx hardhat run src/scripts/deploy.js --network sepolia
 
       - name: Read Deployed Address
         id: read_address
