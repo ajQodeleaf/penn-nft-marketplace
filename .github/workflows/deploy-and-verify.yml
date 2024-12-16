@@ -18,6 +18,17 @@ jobs:
         with:
           node-version: 20
 
+      - name: Log Environment Variables
+        run: |
+          echo "Logging environment variables and secrets"
+          echo "PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}"
+          echo "INFURA_API_KEY: ${{ secrets.INFURA_SEPOLIA_API_KEY }}"
+          echo "ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}"
+          echo "Node version: $(node -v)"
+          echo "NPM version: $(npm -v)"
+          echo "PWD: $(pwd)"
+          echo "Working directory: $(ls -al)"
+        
       - name: Install dependencies
         run: cd backend && npm install
 
@@ -35,7 +46,11 @@ jobs:
 
       - name: Read Deployed Address
         id: read_address
-        run: echo "address=$(cat backend/deployed_address.txt)" >> $GITHUB_ENV
+        run: |
+          echo "Reading deployed address from backend/deployed_address.txt"
+          address=$(cat backend/deployed_address.txt)
+          echo "Deployed address: $address"
+          echo "address=$address" >> $GITHUB_ENV
 
       - name: Verify Contract on Etherscan
         env:
