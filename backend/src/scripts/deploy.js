@@ -13,7 +13,7 @@ async function main() {
   const NFTMarketplace = await hardhat.ethers.getContractFactory('NFTMarketplace');
 
   const nftMarketplace = await NFTMarketplace.deploy();
-  console.log(process.env.INFURA_SEPOLIA_RPC_URL, process.env.PRIVATE_KEY, process.env.ETHERSCAN_API_KEY )
+  console.log(process.env.INFURA_SEPOLIA_RPC_URL, process.env.PRIVATE_KEY, process.env.ETHERSCAN_API_KEY);
 
   const deployedAddress = await nftMarketplace.getAddress();
   console.log('🎉 NFTMarketplace deployed to:', deployedAddress);
