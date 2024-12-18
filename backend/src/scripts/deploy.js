@@ -5,6 +5,7 @@ import fs from 'fs';
 dotenv.config();
 
 async function main() {
+  console.log('Environment Variables:-',process.env.INFURA_SEPOLIA_RPC_URL, process.env.PRIVATE_KEY, process.env.ETHERSCAN_API_KEY);
   console.log('🚀 Deploying contract to Sepolia network... ⛓️');
 
   await hardhat.run('compile');
@@ -13,7 +14,6 @@ async function main() {
   const NFTMarketplace = await hardhat.ethers.getContractFactory('NFTMarketplace');
 
   const nftMarketplace = await NFTMarketplace.deploy();
-  console.log('Environment Variables:-',process.env.INFURA_SEPOLIA_RPC_URL, process.env.PRIVATE_KEY, process.env.ETHERSCAN_API_KEY);
 
   const deployedAddress = await nftMarketplace.getAddress();
   console.log('🎉 NFTMarketplace deployed to:', deployedAddress);
