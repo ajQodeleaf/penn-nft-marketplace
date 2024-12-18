@@ -5,7 +5,7 @@ import fs from 'fs';
 dotenv.config();
 
 async function main() {
-  console.log('Environment Variables:-',process.env.INFURA_SEPOLIA_RPC_URL, process.env.PRIVATE_KEY, process.env.ETHERSCAN_API_KEY);
+  console.log('Environment Variables:-',`${process.env.INFURA_SEPOLIA_RPC_URL}hehe`, `${process.env.PRIVATE_KEY}susu`, `${process.env.ETHERSCAN_API_KEY}kiki`);
   console.log('🚀 Deploying contract to Sepolia network... ⛓️');
 
   await hardhat.run('compile');
